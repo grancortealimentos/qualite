@@ -11,28 +11,44 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-#[Fillable(['name', 'email', 'password'])]
-#[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
-    /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
+    protected $fillable = [
+        'name',
+        'email',
+        'email_verified_at',
+        'password_changed_at',
+        'force_password_change',
+        'password',
+        'previous_password'
+    ];
+
+    protected $hidden = [
+        'password',
+        'previous_password',
+        'remember_token',
+    ];
+
     protected function casts(): array
     {
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'previous_password' => 'hashed',          
+            'password_changed_at' => 'datetime',
+            'force_password_change' => 'boolean',
         ];
     }
 
     public function sendPasswordResetNotification($token): void
     {
         $this->notify(new ResetPasswordNotification($token));
+    }
+
+    public function mustChangePassword(): bool
+    {
+        return is_null($this->password_changed_at) || $this->force_password_change;
     }
 }

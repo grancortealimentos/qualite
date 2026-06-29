@@ -17,7 +17,7 @@ class AppServiceProvider extends ServiceProvider
         Password::defaults(function () {
             return Password::min(8)
                 ->mixedCase() //exige maiuscula + minuscula
-                ->symbols(); //exisge ao menos 1 caractere especial
+                ->symbols(); //exige ao menos 1 caractere especial
         });
     }
 }
