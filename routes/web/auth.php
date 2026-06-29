@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Auth\ChangePasswordController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\LogoutController;
@@ -23,5 +24,14 @@ Route::middleware('guest')->group(function () {
 
 Route::middleware('auth')->group(function () {
     Route::post('logout', [LogoutController::class, 'store'])->name('logout');
-    Route::view('dashboard', 'dashboard.index')->name('dashboard');
+
+    // Troca de senha: autenticada, mas SEM o middleware de bloqueio
+    Route::get('alterar-senha', [ChangePasswordController::class, 'edit'])->name('password.change');
+    Route::put('alterar-senha', [ChangePasswordController::class, 'update']);
+
+    // Tudo que exige senha já trocada vai aqui dentro
+    Route::middleware('password.changed')->group(function () {
+        Route::view('dashboard', 'dashboard.index')->name('dashboard');
+        // futuras telas internas entram aqui
+    });
 });
