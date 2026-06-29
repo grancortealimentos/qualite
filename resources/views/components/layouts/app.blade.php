@@ -10,10 +10,18 @@
 
         @livewireStyles
     </head>
-    <body>
-        {{ $slot }}
+    <body class="bg-gray-50 dark:bg-neutral-900" x-data="{ sidebarOpen: false }">
 
-        <script src="./node_modules/@preline/toggle-password/index.js"></script>
+        <x-layouts.header />
+        <x-layouts.sidebar />
+
+        {{-- Conteúdo: empurrado pra direita no desktop pra dar espaço à sidebar --}}
+        <div class="w-full lg:ps-64">
+            <div class="p-4 sm:p-6 space-y-4 sm:space-y-6">
+                {{ $slot }}
+            </div>
+        </div>
+
         @livewireScripts
     </body>
 </html>
