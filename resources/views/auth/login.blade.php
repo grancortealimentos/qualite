@@ -11,11 +11,10 @@
     <div class="bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-xl shadow-2xs">
         <div class="p-4 sm:p-7">
             <div class="text-center">
-                <h3 class="block text-2xl font-bold text-gray-800 dark:text-neutral-200">Acessar o sistema</h3>
+                <h3 class="block text-2xl font-bold text-gray-800 dark:text-neutral-200">Acesso o sistema</h3>
             </div>
 
             <div class="mt-5">
-
                 <!-- Form -->
                 <form method="POST" action="{{ route('login') }}">
                     @csrf
