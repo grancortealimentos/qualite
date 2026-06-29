@@ -13,12 +13,6 @@
             </div>
 
             <div class="mt-5">
-                {{-- Confirmação de envio (mensagem genérica do controller) --}}
-                @if (session('status'))
-                    <div class="mb-4 p-3 text-sm text-green-700 bg-green-50 border border-green-200 rounded-lg dark:text-green-400 dark:bg-green-800/10 dark:border-green-900">
-                        {{ session('status') }}
-                    </div>
-                @endif
 
                 <p class="mb-4 text-sm text-gray-600 dark:text-neutral-300">
                     Digite seu e-mail e enviaremos um link para você redefinir sua senha.

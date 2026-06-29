@@ -15,12 +15,6 @@
             </div>
 
             <div class="mt-5">
-                {{-- Mensagem de status (ex.: senha redefinida com sucesso) --}}
-                @if (session('status'))
-                    <div class="mb-4 text-sm text-green-600 dark:text-green-500 text-center">
-                        {{ session('status') }}
-                    </div>
-                @endif
 
                 <!-- Form -->
                 <form method="POST" action="{{ route('login') }}">

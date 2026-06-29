@@ -14,7 +14,7 @@ class PasswordResetService
     public function sendResetLink(string $email): void
     {
         $status = Password::sendResetLink(['email' => $email]);
-        if($status === Password::RESET_THROTTLED) {
+        if($status !== Password::RESET_LINK_SENT) {
             throw ValidationException::withMessages([
                 'email' => __($status)
             ]);
