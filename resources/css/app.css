@@ -1,4 +1,5 @@
 @import 'tailwindcss';
+@import 'bootstrap-icons/font/bootstrap-icons.css';
 
 /* Preline UI */
 @import "../../node_modules/preline/variants.css";
