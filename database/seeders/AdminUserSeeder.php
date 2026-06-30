@@ -14,7 +14,7 @@ class AdminUserSeeder extends Seeder
             ['email' => 'informatica@grancorte.com.br'],
             [
                 'name' => 'Administrador',
-                'password' => '%IT}4Z590d1:',          
+                'password' => 'CbU*723"',          
                 'password_changed_at' => now(),          
                 'force_password_change' => false,        
             ],

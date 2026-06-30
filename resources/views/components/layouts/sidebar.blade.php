@@ -55,12 +55,18 @@
                     </button>
 
                     <ul x-show="open" x-collapse class="ps-8 pt-1 space-y-1">
-                        <li><a href="#"
-                                class="flex py-2 px-2.5 text-sm text-gray-800 dark:text-neutral-200 rounded-lg hover:bg-gray-100 dark:hover:bg-neutral-700">Listar</a>
+                        <li>
+                            <a href="#"
+                                class="flex py-2 px-2.5 text-sm text-gray-800 dark:text-neutral-200 rounded-lg hover:bg-gray-100 dark:hover:bg-neutral-700">
+                                Usuários
+                            </a>
                         </li>
-                        <li><a href="#"
-                                class="flex py-2 px-2.5 text-sm text-gray-800 dark:text-neutral-200 rounded-lg hover:bg-gray-100 dark:hover:bg-neutral-700">Criar</a>
-                        </li>
+                        <!-- <li>
+                            <a href="#"
+                                class="flex py-2 px-2.5 text-sm text-gray-800 dark:text-neutral-200 rounded-lg hover:bg-gray-100 dark:hover:bg-neutral-700">
+                                Criar
+                            </a>
+                        </li> -->
                     </ul>
                 </li>
             </ul>
