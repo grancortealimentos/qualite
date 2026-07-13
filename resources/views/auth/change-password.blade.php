@@ -1,26 +1,40 @@
 {{-- resources/views/auth/change-password.blade.php --}}
-<x-layouts.guest :title="'Alterar senha'">
-    <div class="bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-xl shadow-2xs">
-        <div class="p-4 sm:p-7">
-            <div class="text-center">
-                <h3 class="block text-2xl font-bold text-gray-800 dark:text-neutral-200">Alterar senha</h3>
-                <p class="mt-2 text-sm text-gray-600 dark:text-neutral-300">
-                    Por segurança, defina uma nova senha para continuar.
-                </p>
-            </div>
+<x-layouts.guest :title="__('Alterar senha')">
 
-            <div class="mt-5">
-                <form method="POST" action="{{ route('password.change') }}">
-                    @csrf
-                    @method('PUT')
+    {{-- Logo --}}
+    <div class="flex justify-center mb-6">
+        <a href="{{ route('dashboard') }}">
+            <x-logo class="h-20 w-auto" />
+        </a>
+    </div>
 
-                    <div class="grid gap-y-4">
-                        <x-password-fields label="Nova senha" confirm-label="Confirmar nova senha">
-                            Alterar senha
-                        </x-password-fields>
-                    </div>
-                </form>
-            </div>
+    {{-- Card --}}
+    <div class="bg-surface border border-border rounded-2xl shadow-xl overflow-hidden">
+
+        {{-- Cabeçalho do card (mesmo padrão do login: título + divisória) --}}
+        <div class="px-8 pt-8 pb-6 text-center border-b border-border">
+            <h1 class="text-2xl font-bold text-ink">{{ __('Alterar senha') }}</h1>
+            <p class="text-sm text-ink-muted mt-1">
+                {{ __('Por segurança, defina uma nova senha para continuar.') }}
+            </p>
+        </div>
+
+        <div class="p-8">
+            <form method="POST" action="{{ route('password.change') }}" class="space-y-5">
+                @csrf
+                @method('PUT')
+
+                <x-password-fields label="{{ __('Nova senha') }}"
+                    confirm-label="{{ __('Confirmar nova senha') }}">
+                    {{ __('Alterar senha') }}
+                </x-password-fields>
+            </form>
         </div>
     </div>
+
+    {{-- Rodapé --}}
+    <p class="text-center text-xs text-ink-muted mt-6">
+        &copy; {{ date('Y') }} {{ config('app.name') }}. {{ __('Todos os direitos reservados.') }}
+    </p>
+
 </x-layouts.guest>

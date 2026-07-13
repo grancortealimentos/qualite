@@ -1,94 +1,126 @@
 {{-- resources/views/auth/login.blade.php --}}
-<x-layouts.guest :title="'Entrar'">
+<x-layouts.guest :title="__('Entrar') . ' · ' . config('app.name')">
 
-    {{-- Logo acima do card, fora do formulário --}}
+    {{-- Logo --}}
     <div class="flex justify-center mb-6">
-        <a href="{{ url('/') }}">
-            <x-logo class="h-12 w-auto" />
+        <a href="{{ route('login') }}">
+            <x-logo class="h-20 w-auto" />
         </a>
     </div>
 
-    <div class="bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-xl shadow-2xs">
-        <div class="p-4 sm:p-7">
-            <div class="text-center">
-                <h3 class="block text-2xl font-bold text-gray-800 dark:text-neutral-200">Acesso o sistema</h3>
-            </div>
+    {{-- Card --}}
+    <div class="bg-surface border border-border rounded-2xl shadow-xl overflow-hidden">
 
-            <div class="mt-5">
-                <!-- Form -->
-                <form method="POST" action="{{ route('login') }}">
-                    @csrf
-                    <div class="grid gap-y-4">
+        {{-- Cabeçalho do card --}}
+        <div class="px-8 pt-8 pb-6 text-center border-b border-border">
+            <h1 class="text-2xl font-bold text-ink">{{ __('Bem-vindo de volta') }}</h1>
+            <p class="text-sm text-ink-muted mt-1">{{ __('Entre com suas credenciais para continuar.') }}</p>
+        </div>
 
-                        <!-- E-mail -->
-                        <div>
-                            <label for="email"
-                                class="block text-sm mb-2 text-gray-800 dark:text-neutral-200">E-mail</label>
-                            <div class="relative">
-                                <input type="email" id="email" name="email" value="{{ old('email') }}"
-                                    class="py-2.5 sm:py-3 px-4 block w-full bg-white dark:bg-neutral-800 border-gray-200 dark:border-neutral-700 rounded-lg sm:text-sm text-gray-800 dark:text-neutral-200 placeholder:text-gray-500 dark:placeholder:text-neutral-400 focus:border-blue-700 dark:focus:border-blue-600 focus:ring-blue-700 dark:focus:ring-blue-600 disabled:opacity-50 disabled:pointer-events-none @error('email') !border-red-500 @enderror"
-                                    required aria-describedby="email-error">
-                            </div>
-                            @error('email') <p class="text-xs text-red-600 mt-2" id="email-error">{{ $message }}</p>
-                            @enderror
+        <div class="p-8">
+
+            {{-- Mensagens de session('status')/error são exibidas pelo
+                 <x-toast-container> do layout guest, para manter a consistência. --}}
+
+            <form method="POST" action="{{ route('login') }}" class="space-y-5">
+                @csrf
+
+                {{-- E-mail --}}
+                <div>
+                    <label for="email" class="block text-sm font-medium text-ink-muted mb-2">
+                        {{ __('E-mail') }}
+                    </label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 start-0 flex items-center pointer-events-none ps-3.5">
+                            <svg class="size-4 text-ink-muted" fill="none" stroke="currentColor" stroke-width="2"
+                                viewBox="0 0 24 24">
+                                <rect width="20" height="16" x="2" y="4" rx="2" />
+                                <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
+                            </svg>
                         </div>
-
-                        <!-- Senha -->
-                        <div x-data="{ show: false }">
-                            <div class="flex flex-wrap justify-between items-center gap-2">
-                                <label for="password"
-                                    class="block text-sm mb-2 text-gray-800 dark:text-neutral-200">Senha</label>
-                                <a class="inline-flex items-center gap-x-1 text-sm text-blue-600 dark:text-blue-500 decoration-2 hover:underline focus:outline-hidden focus:underline font-medium"
-                                    href="{{ route('password.request') }}">
-                                    Esqueci minha senha
-                                </a>
-                            </div>
-                            <div class="relative">
-                                <input :type="show ? 'text' : 'password'" id="password" name="password"
-                                    class="py-2.5 sm:py-3 ps-4 pe-10 block w-full bg-white dark:bg-neutral-800 border-gray-200 dark:border-neutral-700 rounded-lg sm:text-sm text-gray-800 dark:text-neutral-200 placeholder:text-gray-500 dark:placeholder:text-neutral-400 focus:border-blue-700 dark:focus:border-blue-600 focus:ring-blue-700 dark:focus:ring-blue-600 disabled:opacity-50 disabled:pointer-events-none @error('password') !border-red-500 @enderror"
-                                    required aria-describedby="password-error">
-                                <button type="button" @click="show = !show"
-                                    class="absolute inset-y-0 inset-e-0 flex items-center z-20 px-3 cursor-pointer text-gray-400 dark:text-neutral-500 rounded-e-md focus:outline-hidden focus:text-blue-700 dark:focus:text-blue-600">
-                                    <svg class="shrink-0 size-3.5" width="24" height="24" viewBox="0 0 24 24"
-                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                        stroke-linejoin="round">
-                                        <g x-show="!show">
-                                            <path d="M9.88 9.88a3 3 0 1 0 4.24 4.24" />
-                                            <path
-                                                d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68" />
-                                            <path
-                                                d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61" />
-                                            <line x1="2" x2="22" y1="2" y2="22" />
-                                        </g>
-                                        <g x-show="show" x-cloak>
-                                            <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" />
-                                            <circle cx="12" cy="12" r="3" />
-                                        </g>
-                                    </svg>
-                                </button>
-                            </div>
-                            @error('password') <p class="text-xs text-red-600 mt-2" id="password-error">{{ $message }}
-                            </p> @enderror
-                        </div>
-
-                        <!-- Lembrar de mim -->
-                        <div class="flex items-center">
-                            <div class="flex">
-                                <input id="remember" name="remember" type="checkbox" {{ old('remember') ? 'checked' : '' }}
-                                    class="shrink-0 size-4 bg-transparent border-gray-300 dark:border-neutral-600 rounded-sm shadow-2xs text-blue-600 dark:text-blue-500 focus:ring-0 focus:ring-offset-0 checked:bg-blue-600 dark:checked:bg-blue-500 checked:border-blue-600 dark:checked:border-blue-500">
-                            </div>
-                            <div class="ms-3">
-                                <label for="remember" class="text-sm text-gray-800 dark:text-neutral-200">Lembrar de
-                                    mim</label>
-                            </div>
-                        </div>
-
-                        <button type="submit"
-                            class="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg bg-blue-600 dark:bg-blue-500 border border-transparent text-white hover:bg-blue-700 dark:hover:bg-blue-600 focus:outline-hidden focus:bg-blue-700 dark:focus:bg-blue-600 disabled:opacity-50 disabled:pointer-events-none">Entrar</button>
+                        <input type="email" id="email" name="email" value="{{ old('email') }}" required autofocus
+                            autocomplete="username" aria-describedby="email-error" placeholder="voce@empresa.com.br"
+                            class="py-2.5 sm:py-3 ps-10 pe-4 block w-full bg-canvas border rounded-xl sm:text-sm text-ink placeholder:text-ink-muted focus:ring-primary/20 disabled:opacity-50 disabled:pointer-events-none @error('email') border-danger focus:border-danger @else border-border focus:border-primary @enderror">
                     </div>
-                </form>
-                <!-- End Form -->
-            </div>
+                    @error('email')
+                        <p class="text-xs text-danger mt-2" id="email-error">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                {{-- Senha --}}
+                <div x-data="{ show: false }">
+                    <div class="flex flex-wrap justify-between items-center gap-2 mb-2">
+                        <label for="password" class="block text-sm font-medium text-ink-muted">
+                            {{ __('Senha') }}
+                        </label>
+                        <a href="{{ route('password.request') }}"
+                            class="inline-flex items-center gap-x-1 text-sm text-primary-light decoration-2 hover:underline focus:outline-hidden focus:underline font-medium">
+                            {{ __('Esqueci minha senha') }}
+                        </a>
+                    </div>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 start-0 flex items-center pointer-events-none ps-3.5">
+                            <svg class="size-4 text-ink-muted" fill="none" stroke="currentColor" stroke-width="2"
+                                viewBox="0 0 24 24">
+                                <rect width="18" height="11" x="3" y="11" rx="2" ry="2" />
+                                <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                            </svg>
+                        </div>
+                        <input :type="show ? 'text' : 'password'" id="password" name="password" required
+                            autocomplete="current-password" aria-describedby="password-error" placeholder="••••••••"
+                            class="py-2.5 sm:py-3 ps-10 pe-10 block w-full bg-canvas border rounded-xl sm:text-sm text-ink placeholder:text-ink-muted focus:ring-primary/20 disabled:opacity-50 disabled:pointer-events-none @error('password') border-danger focus:border-danger @else border-border focus:border-primary @enderror">
+                        <button type="button" @click="show = !show" tabindex="-1"
+                            :aria-label="show ? '{{ __('Ocultar senha') }}' : '{{ __('Mostrar senha') }}'"
+                            class="absolute inset-y-0 end-0 flex items-center z-20 px-3 cursor-pointer text-ink-muted hover:text-ink focus:outline-hidden focus:text-primary">
+                            <svg class="shrink-0 size-4" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <g x-show="!show">
+                                    <path d="M9.88 9.88a3 3 0 1 0 4.24 4.24" />
+                                    <path
+                                        d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68" />
+                                    <path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61" />
+                                    <line x1="2" x2="22" y1="2" y2="22" />
+                                </g>
+                                <g x-show="show" x-cloak>
+                                    <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" />
+                                    <circle cx="12" cy="12" r="3" />
+                                </g>
+                            </svg>
+                        </button>
+                    </div>
+                    @error('password')
+                        <p class="text-xs text-danger mt-2" id="password-error">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                {{-- Lembrar-me --}}
+                <div class="flex items-center">
+                    <input type="checkbox" id="remember" name="remember" value="1" @checked(old('remember'))
+                        class="shrink-0 size-4 bg-canvas border-border rounded text-primary focus:ring-primary/20 checked:bg-primary checked:border-primary">
+                    <label for="remember" class="ms-2.5 text-sm text-ink-muted select-none cursor-pointer">
+                        {{ __('Manter-me conectado') }}
+                    </label>
+                </div>
+
+                {{-- Botão entrar --}}
+                <button type="submit" x-data="{ enviando: false }" @click="enviando = true"
+                    :class="enviando && 'opacity-70 pointer-events-none'"
+                    class="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-xl bg-primary text-white hover:bg-primary-hover focus:outline-hidden focus:ring-2 focus:ring-primary/40 transition-all">
+                    <svg x-show="enviando" x-cloak class="size-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4">
+                        </circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.37 0 0 5.37 0 12h4z"></path>
+                    </svg>
+                    <span
+                        x-text="enviando ? '{{ __('Entrando...') }}' : '{{ __('Entrar') }}'">{{ __('Entrar') }}</span>
+                </button>
+            </form>
         </div>
     </div>
+
+    {{-- Rodapé --}}
+    <p class="text-center text-xs text-ink-muted mt-6">
+        &copy; {{ date('Y') }} {{ config('app.name') }}. {{ __('Todos os direitos reservados.') }}
+    </p>
+
 </x-layouts.guest>

@@ -1,44 +1,78 @@
 {{-- resources/views/auth/forgot-password.blade.php --}}
-<x-layouts.guest :title="'Esqueci minha senha'">
-    <div class="bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-xl shadow-2xs">
-        <div class="p-4 sm:p-7">
-            <div class="text-center">
-                <h3 class="block text-2xl font-bold text-gray-800 dark:text-neutral-200">Esqueci minha senha</h3>
-                <p class="mt-2 text-sm text-gray-600 dark:text-neutral-300">
-                    Lembrou a senha?
-                    <a class="text-blue-600 dark:text-blue-500 decoration-2 hover:underline focus:outline-hidden focus:underline font-medium" href="{{ route('login') }}">
-                        Voltar ao login
-                    </a>
-                </p>
-            </div>
+<x-layouts.guest :title="__('Esqueci minha senha')">
 
-            <div class="mt-5">
+    {{-- Logo --}}
+    <div class="flex justify-center mb-6">
+        <a href="{{ route('login') }}">
+            <x-logo class="h-20 w-auto" />
+        </a>
+    </div>
 
-                <p class="mb-4 text-sm text-gray-600 dark:text-neutral-300">
-                    Digite seu e-mail e enviaremos um link para você redefinir sua senha.
-                </p>
+    {{-- Card --}}
+    <div class="bg-surface border border-border rounded-2xl shadow-xl overflow-hidden">
 
-                <!-- Form -->
-                <form method="POST" action="{{ route('password.email') }}">
-                    @csrf
-                    <div class="grid gap-y-4">
+        {{-- Cabeçalho do card (mesmo padrão do login: título + divisória) --}}
+        <div class="px-8 pt-8 pb-6 text-center border-b border-border">
+            <h1 class="text-2xl font-bold text-ink">{{ __('Esqueci minha senha') }}</h1>
+            <p class="text-sm text-ink-muted mt-1">
+                {{ __('Lembrou a senha?') }}
+                <a href="{{ route('login') }}"
+                    class="text-primary-light decoration-2 hover:underline focus:outline-hidden focus:underline font-medium">
+                    {{ __('Voltar ao login') }}
+                </a>
+            </p>
+        </div>
 
-                        <!-- E-mail -->
-                        <div>
-                            <label for="email" class="block text-sm mb-2 text-gray-800 dark:text-neutral-200">E-mail</label>
-                            <div class="relative">
-                                <input type="email" id="email" name="email" value="{{ old('email') }}"
-                                    class="py-2.5 sm:py-3 px-4 block w-full bg-white dark:bg-neutral-800 border-gray-200 dark:border-neutral-700 rounded-lg sm:text-sm text-gray-800 dark:text-neutral-200 placeholder:text-gray-500 dark:placeholder:text-neutral-400 focus:border-blue-700 dark:focus:border-blue-600 focus:ring-blue-700 dark:focus:ring-blue-600 disabled:opacity-50 disabled:pointer-events-none @error('email') !border-red-500 @enderror"
-                                    required aria-describedby="email-error">
-                            </div>
-                            @error('email') <p class="text-xs text-red-600 mt-2" id="email-error">{{ $message }}</p> @enderror
+        <div class="p-8">
+            <p class="mb-5 text-sm text-ink-muted">
+                {{ __('Digite seu e-mail e enviaremos um link para você redefinir sua senha.') }}
+            </p>
+
+            <form method="POST" action="{{ route('password.email') }}" class="space-y-5">
+                @csrf
+
+                {{-- E-mail --}}
+                <div>
+                    <label for="email" class="block text-sm font-medium text-ink-muted mb-2">
+                        {{ __('E-mail') }}
+                    </label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 start-0 flex items-center pointer-events-none ps-3.5">
+                            <svg class="size-4 text-ink-muted" fill="none" stroke="currentColor" stroke-width="2"
+                                viewBox="0 0 24 24">
+                                <rect width="20" height="16" x="2" y="4" rx="2" />
+                                <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
+                            </svg>
                         </div>
-
-                        <button type="submit" class="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg bg-blue-600 dark:bg-blue-500 border border-transparent text-white hover:bg-blue-700 dark:hover:bg-blue-600 focus:outline-hidden focus:bg-blue-700 dark:focus:bg-blue-600 disabled:opacity-50 disabled:pointer-events-none">Enviar link de redefinição</button>
+                        <input type="email" id="email" name="email" value="{{ old('email') }}" required autofocus
+                            autocomplete="username" aria-describedby="email-error" placeholder="voce@empresa.com.br"
+                            class="py-2.5 sm:py-3 ps-10 pe-4 block w-full bg-canvas border rounded-xl sm:text-sm text-ink placeholder:text-ink-muted focus:ring-primary/20 disabled:opacity-50 disabled:pointer-events-none @error('email') border-danger focus:border-danger @else border-border focus:border-primary @enderror">
                     </div>
-                </form>
-                <!-- End Form -->
-            </div>
+                    @error('email')
+                        <p class="text-xs text-danger mt-2" id="email-error">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                {{-- Botão --}}
+                <button type="submit" x-data="{ enviando: false }" @click="enviando = true"
+                    :class="enviando && 'opacity-70 pointer-events-none'"
+                    class="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-xl bg-primary text-white hover:bg-primary-hover focus:outline-hidden focus:ring-2 focus:ring-primary/40 transition-all">
+                    <svg x-show="enviando" x-cloak class="size-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4">
+                        </circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.37 0 0 5.37 0 12h4z"></path>
+                    </svg>
+                    <span x-text="enviando ? '{{ __('Enviando...') }}' : '{{ __('Enviar link de redefinição') }}'">
+                        {{ __('Enviar link de redefinição') }}
+                    </span>
+                </button>
+            </form>
         </div>
     </div>
+
+    {{-- Rodapé --}}
+    <p class="text-center text-xs text-ink-muted mt-6">
+        &copy; {{ date('Y') }} {{ config('app.name') }}. {{ __('Todos os direitos reservados.') }}
+    </p>
+
 </x-layouts.guest>

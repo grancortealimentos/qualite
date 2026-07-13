@@ -73,7 +73,7 @@
         </nav>
 
         {{-- Usuário (fixo na base da sidebar) --}}
-        <div class="mt-auto border-t border-border p-3" x-data="{ open: false }">
+        <div class="relative mt-auto border-t border-border p-3" x-data="{ open: false }">
             <button @click="open = !open" type="button"
                 class="w-full flex items-center gap-x-3 py-2 px-2.5 rounded-lg hover:bg-surface">
                 <span
@@ -88,25 +88,40 @@
                         {{ auth()->user()?->email }}
                     </span>
                 </span>
-                <svg class="ms-auto shrink-0 size-4 text-ink-muted transition-transform" :class="open && 'rotate-180'"
-                    xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <svg class="ms-auto shrink-0 size-4 text-ink-muted transition-transform"
+                    :class="open && 'rotate-180'" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round">
                     <path d="m18 15-6-6-6 6" />
                 </svg>
             </button>
 
             <div x-show="open" x-cloak @click.outside="open = false"
                 class="absolute start-3 end-3 bottom-full mb-2 bg-surface border border-border shadow-xl rounded-lg">
-                <div class="py-3 px-5 bg-surface-hover rounded-t-lg">
-                    <p class="text-sm text-ink-muted">Conectado como</p>
-                    <p class="text-sm font-medium text-ink">{{ auth()->user()?->email }}</p>
-                </div>
+               
                 <div class="p-1.5">
-                    <form method="POST" action="{{ route('logout') }}">
+                    <form method="POST" action="{{ route('logout') }}" x-data="{ saindo: false }"
+                        @submit="saindo = true">
                         @csrf
-                        <button type="submit"
-                            class="w-full text-start flex items-center gap-x-3 py-2 px-3 rounded-lg text-sm text-ink hover:bg-surface-hover">
-                            Sair
+                        <button type="submit" :disabled="saindo"
+                            class="w-full text-start flex items-center gap-x-3 py-2 px-3 rounded-lg text-sm text-danger hover:bg-danger/10 disabled:opacity-50 disabled:cursor-not-allowed">
+                            {{-- Ícone de sair (some quando está saindo) --}}
+                            <svg x-show="!saindo" class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg"
+                                width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                                <polyline points="16 17 21 12 16 7" />
+                                <line x1="21" x2="9" y1="12" y2="12" />
+                            </svg>
+                            {{-- Spinner enquanto sai --}}
+                            <svg x-show="saindo" x-cloak class="shrink-0 size-4 animate-spin" fill="none"
+                                viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                                    stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor"
+                                    d="M4 12a8 8 0 018-8V0C5.37 0 0 5.37 0 12h4z"></path>
+                            </svg>
+                            <span x-text="saindo ? 'Saindo...' : 'Sair'"></span>
                         </button>
                     </form>
                 </div>
