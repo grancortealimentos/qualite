@@ -19,7 +19,7 @@ Route::middleware('auth')->group(function () {
     });
 
     //Pessoas
-    Route::get('/pessoas', [PessoaIndex::class])->name('pessoas.index');
+    Route::get('/pessoas', PessoaIndex::class)->name('pessoas.index');
     Route::get('/pessoas/novo', [PessoaController::class, 'create'])->name('pessoas.create');
     Route::get('/pessoas/{pessoa}/edit', [PessoaController::class, 'edit'])->name('pessoas.edit');
     Route::post('/pessoas', [PessoaController::class, 'store'])->name('pessoas.store');
