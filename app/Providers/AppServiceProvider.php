@@ -9,15 +9,15 @@ class AppServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
-        //
+        
     }
 
     public function boot(): void
     {
-        Password::defaults(function () {
+        Password::defaults(function  () {
             return Password::min(8)
-                ->mixedCase() //exige maiuscula + minuscula
-                ->symbols(); //exige ao menos 1 caractere especial
+                ->mixedCase()
+                ->symbols();
         });
     }
 }

@@ -13,21 +13,23 @@ final class ChangePasswordService
         //Regra 1: não pode ser igual a senha atual
         if(Hash::check($newPassword, $user->password)) {
             throw ValidationException::withMessages([
-                'password' => 'A nova senha não pode ser igual à senha atual.',
+                'password' => 'A nova senha não pode ser igual à senha atual.'
             ]);
         }
 
-        //Regra 2: não pode ser igual a senha anterior
+        //RN-008: não pode ser igual a anterior
         if($user->previous_password && Hash::check($newPassword, $user->previous_password)) {
             throw ValidationException::withMessages([
-                'password'=> 'A nova senha não pode ser igual a anterior.',
+                'password' => 'A nova senha não pode ser igual a anterior.',
             ]);
         }
 
+        //RN-009: Hash anterior -> previous_password, password atualizado,
+        //password_change_at atual, force_password_change desativado
         $user->forceFill([
-            'previous_password'     => $user->password,
-            'password'              => Hash::make($newPassword),
-            'password_changed_at'   => now(),
+            'previous_password' => $user->password,
+            'password' => Hash::make($newPassword),
+            'password_changed_at' => now(),
             'force_password_change' => false,
         ])->save();
     }

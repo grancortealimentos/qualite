@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\DTOs\Auth\LoginData;
+use App\DTO\LoginData;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Services\Auth\AuthService;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\View\View;
 
 class LoginController extends Controller
 {
@@ -14,7 +15,7 @@ class LoginController extends Controller
         private readonly AuthService $authService
     ) {}
 
-    public function create()
+    public function create(): View
     {
         return view('auth.login');
     }
@@ -25,8 +26,6 @@ class LoginController extends Controller
             ...$request->validated(),
             'remember' => $request->boolean('remember'),
         ]));
-
-        $request->session()->regenerate();
 
         return redirect()->intended(route('dashboard'));
     }

@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\DTOs\Auth\ResetPasswordData;
+use App\DTO\ResetPasswordData;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\ResetPasswordRequest;
 use App\Services\Auth\PasswordResetService;
@@ -19,15 +19,14 @@ class ResetPasswordController extends Controller
     {
         return view('auth.reset-password', [
             'token' => $token,
-            'email' => $request->query('email'),
-        ]);
+            'email' => $request->query('email')
+        ]); 
     }
 
     public function store(ResetPasswordRequest $request): RedirectResponse
     {
         $this->passwordResetService->reset(ResetPasswordData::fromArray($request->validated()));
-        return redirect()->route('login')->with(
-            'status', __('passwords.reset'),
-        );
+
+        return redirect()->route('login')->with('status', __('passwords.reset'));
     }
 }

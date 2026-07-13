@@ -13,12 +13,9 @@ class LogoutController extends Controller
         private readonly AuthService $authService
     ) {}
 
-    public function store(Request $request): RedirectResponse
+    public function store(): RedirectResponse
     {
         $this->authService->logout();
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
-
         return redirect()->route('login');
     }
 }

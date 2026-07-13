@@ -15,7 +15,6 @@
         "vite": "^8.0.0"
     },
     "dependencies": {
-        "@preline/toggle-password": "^4.2.0",
         "bootstrap-icons": "^1.13.1",
         "preline": "^4.2.0"
     }

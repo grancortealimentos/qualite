@@ -2,12 +2,13 @@
 
 namespace App\Services\Auth;
 
-use App\DTOs\Auth\ResetPasswordData;
+use App\DTO\ResetPasswordData;
 use App\Models\User;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
+
 
 class PasswordResetService
 {
@@ -16,7 +17,7 @@ class PasswordResetService
         $status = Password::sendResetLink(['email' => $email]);
         if($status !== Password::RESET_LINK_SENT) {
             throw ValidationException::withMessages([
-                'email' => __($status)
+                'email' => __($status),
             ]);
         }
     }
@@ -26,7 +27,13 @@ class PasswordResetService
         $status = Password::reset(
             $data->toArray(),
             function(User $user, string $password) {
-                $user->forceFill(['password' => $password])->save();
+                $user->forceFill([
+                    'previous_password' => $user->password,
+                    'password' => $password, // texto puro — cast 'hashed' cuida do resto
+                    'password_changed_at' => now(),
+                    'force_password_change' => false,
+                ])->save();
+
                 $user->setRememberToken(Str::random(60));
                 event(new PasswordReset($user));
             }
@@ -34,8 +41,8 @@ class PasswordResetService
 
         if($status !== Password::PASSWORD_RESET) {
             throw ValidationException::withMessages([
-                'email' => __($status)
-            ]);
+                'email' => __($status),
+            ]); 
         }
     }
 }

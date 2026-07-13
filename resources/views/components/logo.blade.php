@@ -1,1 +1,5 @@
-<img src="{{ asset('images/logo.png') }}" alt="{{ config('app.name') }}" class="h-32 w-auto">
+<img 
+    src="{{ asset('images/logo.png') }}" 
+    alt="{{ config('app.name') }}" 
+    {{ $attributes->merge(['class' => 'w-auto']) }}
+/>

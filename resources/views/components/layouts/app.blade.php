@@ -14,10 +14,12 @@
 
         @livewireStyles
     </head>
-    <body class="bg-gray-50 dark:bg-neutral-900" x-data="{ sidebarOpen: false }">
+    <body class="bg-canvas" x-data="{ sidebarOpen: false }">
 
-        <x-layouts.header />
         <x-layouts.sidebar />
+
+        {{-- Toasts: fixos, fora do fluxo do documento --}}
+        <x-toast-container />
 
         {{-- Conteúdo: empurrado pra direita no desktop pra dar espaço à sidebar --}}
         <div class="w-full lg:ps-64">
