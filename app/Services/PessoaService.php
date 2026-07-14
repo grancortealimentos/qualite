@@ -9,6 +9,7 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Throwable;
 
 class PessoaService
 {
@@ -24,15 +25,39 @@ class PessoaService
         return $this->pessoaRepository->paginar($filtros, $porPagina);
     }
 
-    public function create(PessoaData $data, ?UploadedFile $foto = null): Pessoa
+    public function create(
+        PessoaData $data, 
+        ?UploadedFile $foto = null,
+        ?array $dadosUsuario = null
+    ): Pessoa
     {
-        return DB::transaction(function () use ($data, $foto) {
-            if($foto) {
-                $data = $data->comFoto($this->salvarFoto($foto));
-            }
+        $caminhoFoto = $foto ? $this->salvarFoto($foto) : null;
 
-            return $this->pessoaRepository->create($data);
-        });
+        try
+        {
+            return DB::transaction(function () use ($data, $caminhoFoto, $dadosUsuario) {
+                if($caminhoFoto) {
+                    $data = $data->comFoto($caminhoFoto);
+                }
+
+                $pessoa = $this->pessoaRepository->create($data);
+                if($dadosUsuario !== null) {
+                    $this->usuarioService->create(
+                        $dadosUsuario,
+                        $pessoa->id,
+                        $pessoa->nome_completo,
+
+                    );
+                }
+
+                return $pessoa;
+            });
+        }
+        catch(Throwable $e)
+        {
+            $this->removerFoto($caminhoFoto);
+            throw $e;
+        }
     }
 
     public function update(Pessoa $pessoa, PessoaData $data, ?UploadedFile $foto = null): Pessoa
@@ -57,12 +82,12 @@ class PessoaService
     public function delete(Pessoa $pessoa): bool
     {
         //Soft delete: a foto é preservada para eventual restauração
-        return $this->pessoaRepository->delete($pessoa);
+        return DB::transaction(fn () => $this->pessoaRepository->delete($pessoa));
     }
 
     public function alternarStatus(Pessoa $pessoa): Pessoa
     {
-        return $this->pessoaRepository->alterarStatus($pessoa);
+        return DB::transaction(fn () => $this->pessoaRepository->alterarStatus($pessoa));
     }
 
     private function salvarFoto(UploadedFile $foto): string

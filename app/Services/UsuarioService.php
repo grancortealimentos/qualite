@@ -5,6 +5,7 @@ namespace App\Services;
 use App\DTO\UsuarioData;
 use App\Models\User;
 use App\Repositories\UsuarioRepository;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 
 class UsuarioService
@@ -26,24 +27,26 @@ class UsuarioService
         string $nomeCompleto,
     ): User
     {
-        /**
-         * Checagem defensiva dentro da transação.
-         * A validação primária continua sendo o Rule::unique.
-        */
-        $email = $dadosValidados['usuario_email'];
-        if($this->usuarioRepository->emailEmUso($email)) {
-            throw ValidationException::withMessages([
-                'usuario_email' => 'Este e-mail já está em uso por outro usuário.'
-            ]);
-        }
+       return DB::transaction(function () use ($dadosValidados, $pessoaId, $nomeCompleto) {
+            /**
+             * Checagem defensiva dentro da transação.
+             * A validação primária continua sendo o Rule::unique.
+            */
+            $email = $dadosValidados['usuario_email'];
+            if($this->usuarioRepository->emailEmUso($email)) {
+                throw ValidationException::withMessages([
+                    'usuario_email' => 'Este e-mail já está em uso por outro usuário.'
+                ]);
+            }
 
-        $data = UsuarioData::fromArray(
-            $dadosValidados,
-            $pessoaId,
-            $nomeCompleto
-        );
+            $data = UsuarioData::fromArray(
+                $dadosValidados,
+                $pessoaId,
+                $nomeCompleto
+            );
 
-        return $this->usuarioRepository->create($data->toArray());
+            return $this->usuarioRepository->create($data->toArray());
+       });
     }
 
     /**
@@ -51,7 +54,7 @@ class UsuarioService
     */
     public function revogar(User $user): User
     {
-        return $this->usuarioRepository->revogar($user);
+        return DB::transaction(fn () => $this->usuarioRepository->revogar($user));
     }
 
     /**
@@ -59,6 +62,6 @@ class UsuarioService
     */
     public function reativar(User $user): User
     {
-        return $this->usuarioRepository->reativar($user);
+        return DB::transaction(fn () => $this->usuarioRepository->reativar($user));
     }
 }
