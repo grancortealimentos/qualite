@@ -294,53 +294,30 @@
                 </div>
 
                 @if ($pessoa->usuario)
-                    {{-- JÁ TEM USUÁRIO: edição de credenciais + ações de acesso --}}
+                    {{-- JÁ TEM USUÁRIO: exibição em leitura + ações de acesso --}}
                     <div class="p-7">
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            <div>
-                                <label class="block text-[10px] text-ink-muted uppercase mb-1.5">Nome de Exibição
-                                    <span class="text-danger">*</span></label>
-                                <input type="text" name="usuario_name" form="form-editar-usuario"
-                                    value="{{ old('usuario_name', $pessoa->usuario->name) }}" required
-                                    class="w-full bg-canvas rounded-xl text-ink py-2.5 text-sm focus:ring-accent/20 transition-all @error('usuario_name') border-danger @else border-border focus:border-accent @enderror">
-                                @error('usuario_name')
-                                    <p class="text-xs text-danger mt-1">{{ $message }}</p>
-                                @enderror
+                            <div class="bg-canvas p-4 rounded-xl border border-border">
+                                <span class="block text-[10px] text-ink-muted uppercase mb-1">Nome de Exibição</span>
+                                <span class="text-sm text-ink">{{ $pessoa->usuario->name }}</span>
                             </div>
-
-                            <div>
-                                <label class="block text-[10px] text-ink-muted uppercase mb-1.5">E-mail de Login
-                                    <span class="text-danger">*</span></label>
-                                <input type="email" name="usuario_email" form="form-editar-usuario"
-                                    value="{{ old('usuario_email', $pessoa->usuario->email) }}" required
-                                    class="w-full bg-canvas rounded-xl text-ink py-2.5 text-sm focus:ring-accent/20 transition-all @error('usuario_email') border-danger @else border-border focus:border-accent @enderror">
-                                @error('usuario_email')
-                                    <p class="text-xs text-danger mt-1">{{ $message }}</p>
-                                @enderror
+                            <div class="bg-canvas p-4 rounded-xl border border-border">
+                                <span class="block text-[10px] text-ink-muted uppercase mb-1">E-mail de Login</span>
+                                <span class="text-sm text-ink">{{ $pessoa->usuario->email }}</span>
                             </div>
-
-                            <div>
-                                <span class="block text-[10px] text-ink-muted uppercase mb-1.5">Status</span>
-                                <div class="bg-canvas p-2.5 rounded-xl border border-border">
+                            <div class="bg-canvas p-4 rounded-xl border border-border">
+                                <span class="block text-[10px] text-ink-muted uppercase mb-1">Status</span>
+                                <span
+                                    class="inline-flex items-center gap-1.5 text-sm {{ $pessoa->usuario->is_active ? 'text-success' : 'text-danger' }}">
                                     <span
-                                        class="inline-flex items-center gap-1.5 text-sm {{ $pessoa->usuario->is_active ? 'text-success' : 'text-danger' }}">
-                                        <span
-                                            class="size-1.5 rounded-full {{ $pessoa->usuario->is_active ? 'bg-success' : 'bg-danger' }}"></span>
-                                        {{ $pessoa->usuario->is_active ? 'Ativo' : 'Revogado' }}
-                                    </span>
-                                </div>
+                                        class="size-1.5 rounded-full {{ $pessoa->usuario->is_active ? 'bg-success' : 'bg-danger' }}"></span>
+                                    {{ $pessoa->usuario->is_active ? 'Ativo' : 'Revogado' }}
+                                </span>
                             </div>
                         </div>
 
-                        <div class="flex justify-end mt-4">
-                            <button type="submit" form="form-editar-usuario"
-                                class="py-2 px-4 inline-flex items-center gap-x-2 text-sm font-medium rounded-xl bg-accent/10 text-accent-light border border-accent/20 hover:bg-accent/20 transition-all">
-                                <i class="fa-solid fa-floppy-disk"></i>
-                                {{ __('Salvar credenciais') }}
-                            </button>
-                        </div>
-
-                        {{-- Ações de acesso --}}
+                        {{-- Ações de acesso. O atributo form="" aponta para os forms declarados
+                             FORA do form de pessoa (no fim do arquivo): HTML não permite aninhar. --}}
                         <div class="flex items-center justify-between gap-4 mt-6 pt-6 border-t border-border">
                             @if ($pessoa->usuario->is_active)
                                 <p class="text-xs text-ink-muted italic">
@@ -484,13 +461,7 @@
 
         {{-- Forms das ações de acesso: ficam FORA do form de pessoa (aninhamento
              é inválido em HTML). Os botões do card os acionam via atributo form="". --}}
-             @if ($pessoa->usuario)
-            <form id="form-editar-usuario" method="POST"
-                action="{{ route('pessoas.atualizar-usuario', $pessoa) }}" class="hidden">
-                @csrf
-                @method('PATCH')
-            </form>
-
+        @if ($pessoa->usuario)
             <form id="form-revogar-usuario" method="POST" action="{{ route('pessoas.revogar', $pessoa) }}"
                 class="hidden">
                 @csrf
