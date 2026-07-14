@@ -3,7 +3,7 @@
         fotoUrl: null,
         tipoDoc: '{{ old('tipo_documento', 'CPF') }}',
         verSenha: false,
-        criarAcesso: {{ old('criar_acesso') ? 'true' : 'false' }},
+        criarAcesso: {{ old('criar_usuario') ? 'true' : 'false' }},
         preview(e) {
             const file = e.target.files[0];
             if (file) { this.fotoUrl = URL.createObjectURL(file); }
@@ -246,7 +246,7 @@
 
                     {{-- Toggle que liga/desliga a seção --}}
                     <label class="relative inline-flex items-center cursor-pointer shrink-0">
-                        <input type="checkbox" name="criar_acesso" value="1" class="sr-only peer"
+                        <input type="checkbox" name="criar_usuario" value="1" class="sr-only peer"
                             x-model="criarAcesso">
                         <div
                             class="w-11 h-6 bg-border rounded-full peer peer-checked:bg-accent after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-full transition-all">
@@ -258,55 +258,33 @@
                 <div x-show="criarAcesso" x-collapse>
                     <div class="p-7 space-y-8">
 
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div class="flex items-center justify-between p-4 bg-canvas rounded-xl border border-border">
-                                <div>
-                                    <span class="block text-sm font-medium text-ink">Usuário Ativo</span>
-                                    <span class="text-xs text-ink-muted">Permitir entrada no sistema.</span>
-                                </div>
-                                <label class="relative inline-flex items-center cursor-pointer">
-                                    <input type="checkbox" name="is_active" value="1" class="sr-only peer"
-                                        @checked(old('is_active', true))>
-                                    <div
-                                        class="w-11 h-6 bg-border rounded-full peer peer-checked:bg-success after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-full transition-all">
-                                    </div>
-                                </label>
-                            </div>
-
-                            <div class="flex items-center justify-between p-4 bg-canvas rounded-xl border border-border">
-                                <div>
-                                    <span class="block text-sm font-medium text-ink">Forçar Troca de Senha</span>
-                                    <span class="text-xs text-ink-muted">Exigir troca no primeiro acesso.</span>
-                                </div>
-                                <label class="relative inline-flex items-center cursor-pointer">
-                                    <input type="checkbox" name="force_password_change" value="1" class="sr-only peer"
-                                        @checked(old('force_password_change'))>
-                                    <div
-                                        class="w-11 h-6 bg-border rounded-full peer peer-checked:bg-caution after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-full transition-all">
-                                    </div>
-                                </label>
-                            </div>
+                        {{-- Aviso: comportamento fixo da conta --}}
+                        <div
+                            class="flex items-start gap-2.5 p-3 rounded-lg bg-caution/10 border border-caution/20 text-xs text-ink-muted">
+                            <i class="fa-solid fa-circle-info text-caution mt-0.5"></i>
+                            <span>A conta é criada <span class="text-ink font-medium">ativa</span> e a
+                                <span class="text-ink font-medium">troca de senha no primeiro acesso é
+                                    obrigatória</span>.</span>
                         </div>
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div class="md:col-span-2">
-                                <label class="block text-sm font-medium text-ink-muted mb-1.5">Nome de Exibição
-                                    <span class="text-danger">*</span></label>
-                                <input type="text" name="name" value="{{ old('name') }}"
-                                    :required="criarAcesso"
-                                    class="w-full bg-canvas rounded-xl text-ink py-2.5 focus:ring-accent/20 transition-all @error('name') border-danger @else border-border focus:border-accent @enderror">
-                                @error('name')
+                                <label class="block text-sm font-medium text-ink-muted mb-1.5">Nome de Exibição</label>
+                                <input type="text" name="usuario_name" value="{{ old('usuario_name') }}"
+                                    class="w-full bg-canvas rounded-xl text-ink py-2.5 focus:ring-accent/20 transition-all @error('usuario_name') border-danger @else border-border focus:border-accent @enderror"
+                                    placeholder="Deixe em branco para usar o nome da pessoa preenchido acima">
+                                @error('usuario_name')
                                     <p class="text-xs text-danger mt-1">{{ $message }}</p>
                                 @enderror
                             </div>
 
-                            <div>
+                            <div class="md:col-span-2">
                                 <label class="block text-sm font-medium text-ink-muted mb-1.5">E-mail de Login <span
                                         class="text-danger">*</span></label>
-                                <input type="email" name="user_email" value="{{ old('user_email') }}"
+                                <input type="email" name="usuario_email" value="{{ old('usuario_email') }}"
                                     :required="criarAcesso"
-                                    class="w-full bg-canvas rounded-xl text-ink py-2.5 focus:ring-accent/20 transition-all @error('user_email') border-danger @else border-border focus:border-accent @enderror">
-                                @error('user_email')
+                                    class="w-full bg-canvas rounded-xl text-ink py-2.5 focus:ring-accent/20 transition-all @error('usuario_email') border-danger @else border-border focus:border-accent @enderror">
+                                @error('usuario_email')
                                     <p class="text-xs text-danger mt-1">{{ $message }}</p>
                                 @enderror
                             </div>
@@ -315,9 +293,9 @@
                                 <label class="block text-sm font-medium text-ink-muted mb-1.5">Senha Provisória
                                     <span class="text-danger">*</span></label>
                                 <div class="relative">
-                                    <input :type="verSenha ? 'text' : 'password'" name="password"
+                                    <input :type="verSenha ? 'text' : 'password'" name="usuario_password"
                                         :required="criarAcesso"
-                                        class="w-full bg-canvas rounded-xl text-ink py-2.5 pe-11 focus:ring-accent/20 transition-all @error('password') border-danger @else border-border focus:border-accent @enderror">
+                                        class="w-full bg-canvas rounded-xl text-ink py-2.5 pe-11 focus:ring-accent/20 transition-all @error('usuario_password') border-danger @else border-border focus:border-accent @enderror">
                                     <button type="button" @click="verSenha = !verSenha" tabindex="-1"
                                         class="absolute inset-y-0 end-0 flex items-center pe-3.5 text-ink-muted hover:text-ink"
                                         :aria-label="verSenha ? 'Ocultar senha' : 'Mostrar senha'">
@@ -336,32 +314,17 @@
                                         </svg>
                                     </button>
                                 </div>
-                                @error('password')
+                                @error('usuario_password')
                                     <p class="text-xs text-danger mt-1">{{ $message }}</p>
                                 @enderror
                             </div>
-                        </div>
 
-                        <div class="pt-6 border-t border-border">
-                            <h4 class="text-xs font-semibold text-ink-muted uppercase tracking-widest mb-4">
-                                Parâmetros Adicionais</h4>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div class="bg-canvas/50 p-3 rounded-lg border border-border/50">
-                                    <span class="block text-[10px] text-ink-muted uppercase mb-1">Expiração da
-                                        Senha</span>
-                                    <input type="datetime-local" name="password_reset_expires_at"
-                                        value="{{ old('password_reset_expires_at') }}"
-                                        class="w-full bg-transparent border-none p-0 text-sm text-ink focus:ring-0">
-                                </div>
-
-                                <div
-                                    class="bg-canvas/30 p-3 rounded-lg border border-border/30 opacity-50 flex items-center justify-between">
-                                    <div>
-                                        <span class="block text-[10px] text-ink-muted uppercase">Última Alteração</span>
-                                        <span class="text-sm text-ink">Nenhuma registrada</span>
-                                    </div>
-                                    <i class="fa-solid fa-clock-rotate-left text-border"></i>
-                                </div>
+                            <div>
+                                <label class="block text-sm font-medium text-ink-muted mb-1.5">Confirmar Senha
+                                    <span class="text-danger">*</span></label>
+                                <input :type="verSenha ? 'text' : 'password'" name="usuario_password_confirmation"
+                                    :required="criarAcesso"
+                                    class="w-full bg-canvas rounded-xl text-ink py-2.5 focus:ring-accent/20 transition-all border-border focus:border-accent">
                             </div>
                         </div>
                     </div>

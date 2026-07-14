@@ -59,8 +59,8 @@ class User extends Authenticatable
         return $this->belongsTo(Pessoa::class);
     }
 
-    public function acessosPropriedades(): HasMany
-    {
-        // return $this->hasMany();
-    }
+    // public function acessosPropriedades(): HasMany
+    // {
+    //     return $this->hasMany();
+    // }
 }

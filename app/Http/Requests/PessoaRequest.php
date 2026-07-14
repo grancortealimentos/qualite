@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\Password;
 
 class PessoaRequest extends FormRequest
 {
@@ -21,6 +22,7 @@ class PessoaRequest extends FormRequest
         $this->merge([
             //checkbox desmarcado não é enviado pelo browser.
             'eh_ativo' => $this->boolean('eh_ativo'),
+            'criar_usuario' => $this->boolean('criar_usuario'),
 
             // remove pontos, traços, barras , parenteses e espaços
             'documento' => $this->limpar($this->input('documento')),
@@ -71,6 +73,29 @@ class PessoaRequest extends FormRequest
             'cidade' => ['nullable', 'string'],
             'estado' => ['nullable', 'string'],
             'pais' => ['nullable', 'string'],
+
+            // --- Criação opcional de usuário ---
+            // 'boolean' é OBRIGATÓRIO aqui: é ele que faz o exclude_unless
+            // abaixo comparar o booleano real com 'true' corretamente.
+            'criar_usuario' => ['boolean'],
+
+            'usuario_name' => [
+                'exclude_unless:criar_usuario,true',
+                'nullable', 'string', 'max:255',
+            ],
+
+            'usuario_email' => [
+                'exclude_unless:criar_usuario,true',
+                'required', 'email', 'max:255',
+                // unique com whereNull: e-mail de usuário soft-deleted não bloqueia
+                Rule::unique('users', 'email')->whereNull('deleted_at'),
+            ],
+            'usuario_password' => [
+                'exclude_unless:criar_usuario,true',
+                'required', 'string',
+                Password::defaults(),
+                'confirmed', // espera o campo usuario_password_confirmation
+            ],
         ];
     }
 
@@ -153,6 +178,9 @@ class PessoaRequest extends FormRequest
             'tipo_documento' => 'tipo de documento',
             'doc_profissional' => 'documento profissional',
             'url_foto_perfil' => 'foto de perfil',
+            'usuario_name' => 'nome do usuário',
+            'usuario_email' =>'e-mail do usuário',
+            'usuario_password' => 'senha do usuário'
         ];
     }
 
@@ -162,6 +190,11 @@ class PessoaRequest extends FormRequest
             'documento.unique' => 'Este documento já está cadastrado.',
             'cep.size' => 'O CEP deve conter 8 digitos.',
             'estado.size' => 'O estado deve conter 2 letras (UF).',
+
+            'usuario_email.unique' => 'Este e-mail já está em uso por outro usuário.',
+            'usuario_email.required' => 'O e-mail é obrigatório para criar o acesso.',
+            'usuario_password.required' => 'A senha é obrigatória para criar o acesso.',
+            'usuario_password.confirmed' => 'A confirmação de senha não confere.'
         ];
     }
 }

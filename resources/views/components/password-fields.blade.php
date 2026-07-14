@@ -4,7 +4,7 @@
     'confirmLabel' => 'Confirmar nova senha',
 ])
 
-<div class="contents" x-data="passwordValidator">
+<div class="space-y-5" x-data="passwordValidator">
     {{-- Nova senha --}}
     <div x-data="{ show: false }">
         <label for="password" class="block text-sm font-medium text-ink-muted mb-2">{{ $label }}</label>

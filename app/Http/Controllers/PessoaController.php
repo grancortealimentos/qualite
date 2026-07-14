@@ -47,7 +47,7 @@ class PessoaController extends Controller
             report($e);
             return back()
                 ->withInput()
-                ->with('erro', 'Não foi possível cadastrar o registro. Tente novamente');
+                ->with('error', 'Não foi possível cadastrar o registro. Tente novamente');
         }
     }
 
@@ -80,7 +80,7 @@ class PessoaController extends Controller
             report($e);
             return back()
                 ->withInput()
-                ->with('erro', 'Não foi possível atualizar o registro. Tente novamente.');
+                ->with('error', 'Não foi possível atualizar o registro. Tente novamente.');
         }
     }
 
@@ -89,7 +89,7 @@ class PessoaController extends Controller
         $usuario = $pessoa->usuario;
         if($usuario === null) {
             return back()
-                ->with('erro', 'Esta pessoa não possui usuário para revogar.');
+                ->with('error', 'Esta pessoa não possui usuário para revogar.');
         }
 
         try
@@ -102,7 +102,7 @@ class PessoaController extends Controller
         {
             report($e);
             return back()
-                ->with('erro', 'Não foi possível revogar acesso.');
+                ->with('error', 'Não foi possível revogar acesso.');
         }
     }
 
@@ -111,7 +111,7 @@ class PessoaController extends Controller
         $usuario = $pessoa->usuario;
         if($usuario === null) {
             return back()
-                ->with('erro', 'Esta pessoa não possui usuário para revogar.');
+                ->with('error', 'Esta pessoa não possui usuário para revogar.');
         }
 
         try
@@ -124,7 +124,7 @@ class PessoaController extends Controller
         {
             report($e);
             return back()
-                ->with('erro', 'Não foi possível reativar acesso.');
+                ->with('error', 'Não foi possível reativar acesso.');
         }
     }
 
