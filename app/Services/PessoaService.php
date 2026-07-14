@@ -15,7 +15,8 @@ class PessoaService
     private const DIRETORIO_FOTOS = 'pessoas/fotos';
 
     public function __construct(
-        private readonly PessoaRepository $pessoaRepository
+        private readonly PessoaRepository $pessoaRepository,
+        private readonly UsuarioService $usuarioService,
     ) {}
 
     public function listar(array $filtros = [], int $porPagina = 10): LengthAwarePaginator
