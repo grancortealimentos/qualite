@@ -41,26 +41,40 @@ class User extends Authenticatable
         'password' => 'hashed',
         'previous_password' => 'hashed',
         'is_active' => 'boolean',
+        'force_password_change' => 'boolean',
         'password_reset_expires_at' => 'datetime',
         'email_verified_at' => 'datetime',
         'password_changed_at' => 'datetime',
     ];
 
     /**
-        * Usado pelo middleware EnsurePasswordIsChanged (RN-005/RN-006/RN-007).
+     * Usado pelo middleware EnsurePasswordIsChanged (RN-005/RN-006/RN-007).
+     * 
+     * Dois gatilhos INDEPENDENTES forçam a troca:
+     * 1: force_password_change = true -> admin exigiu a troca (ex: senha provisoria)
+     * 2: password_reset_expires_at já venceu e a senha não foi trocada depois desta data
+     * politica de expiração definida pelo admin.
     */
     public function mustChangePassword(): bool
     {
-        return (bool) $this->force_password_change;
+        if($this->force_password_change) {
+            return true;
+        }
+
+        if($this->password_reset_expires_at === null) {
+            return false;
+        }
+
+        if($this->password_reset_expires_at->isFuture()) {
+            return false;
+        }
+
+        return $this->password_changed_at === null
+            || $this->password_changed_at->lessThan($this->password_reset_expires_at);
     }
 
     public function pessoa(): BelongsTo
     {
         return $this->belongsTo(Pessoa::class);
     }
-
-    // public function acessosPropriedades(): HasMany
-    // {
-    //     return $this->hasMany();
-    // }
 }

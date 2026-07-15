@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\DTO\UsuarioData;
 use App\Models\User;
 
 class UsuarioRepository
@@ -11,9 +12,20 @@ class UsuarioRepository
      * Recebe o array já montado pelo UsuarioData::toArray().
      * A senha vem texto puro; o cast 'hashed' no model faz o hash
     */
-    public function create(array $data): User
+    public function create(UsuarioData $data): User
     {
-        return User::create($data);
+        return User::create($data->toArray());
+    }
+
+    /**
+     * Atualiza as credenciais do usuário.
+     * toArrayParaUpdate() envia só o que a edição do admin toca: não mexe em password,
+     * pessoa_id nem is_active.
+    */
+    public function update(User $user, UsuarioData $data): User
+    {
+        $user->update($data->toArrayParaUpdate());
+        return $user->refresh();
     }
 
     /**
@@ -27,11 +39,14 @@ class UsuarioRepository
 
     /**
      * Verifica se um e-mail jpa estaá em uso por um usuário não deletado.
+     * $ignorarId permite excluir o proprio usuario da checagem na edição.
      * Útil como checagem defensiva dentro da transação, além do Rule::unique.
     */
-    public function emailEmUso(string $email): bool
+    public function emailEmUso(string $email, ?int $ignorarId = null): bool
     {
-        return User::where('email', $email)->exists();
+        return User::where('email', $email)
+            ->when($ignorarId, fn ($query) => $query->where('id', '!=', $ignorarId))
+            ->exists();
     }
 
     /**

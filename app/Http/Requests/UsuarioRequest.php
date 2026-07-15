@@ -12,8 +12,16 @@ class UsuarioRequest extends FormRequest
         return true;
     }
 
+    protected function prepareForValidation(): void
+    {
+        $this->merge([
+            'usuario_force_password_change' => $this->boolean('usuario_force_password_change')
+        ]);
+    }
+
     public function rules(): array
     {
+        //usuario editado é sempre o vinculado à pessoa da rota.
         $usuarioId = $this->route('pessoa')?->usuario?->id;
 
         return [
@@ -24,6 +32,8 @@ class UsuarioRequest extends FormRequest
                     ->ignore($usuarioId)
                     ->whereNull('deleted_at'),
             ],
+            'usuario_force_password_change' => ['boolean'],
+            'usuario_password_expires_at' => ['nullable', 'date'],
         ];
     }
 

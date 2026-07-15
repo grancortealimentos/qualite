@@ -23,6 +23,7 @@ class PessoaRequest extends FormRequest
             //checkbox desmarcado não é enviado pelo browser.
             'eh_ativo' => $this->boolean('eh_ativo'),
             'criar_usuario' => $this->boolean('criar_usuario'),
+            'usuario_force_password_change' => $this->boolean('usuario_force_password_change'),
 
             // remove pontos, traços, barras , parenteses e espaços
             'documento' => $this->limpar($this->input('documento')),
@@ -87,7 +88,6 @@ class PessoaRequest extends FormRequest
             'usuario_email' => [
                 'exclude_unless:criar_usuario,true',
                 'required', 'email', 'max:255',
-                // unique com whereNull: e-mail de usuário soft-deleted não bloqueia
                 Rule::unique('users', 'email')->whereNull('deleted_at'),
             ],
             'usuario_password' => [
@@ -95,6 +95,16 @@ class PessoaRequest extends FormRequest
                 'required', 'string',
                 Password::defaults(),
                 'confirmed', // espera o campo usuario_password_confirmation
+            ],
+
+            'usuario_force_password_change' => [
+                'exclude_unless:criar_usuario,true',
+                'boolean',
+            ],
+
+            'usuario_password_expires_at' => [
+                'exclude_unless:criar_usuario,true',
+                'nullable', 'date', 'after:now',
             ],
         ];
     }
@@ -179,8 +189,10 @@ class PessoaRequest extends FormRequest
             'doc_profissional' => 'documento profissional',
             'url_foto_perfil' => 'foto de perfil',
             'usuario_name' => 'nome do usuário',
-            'usuario_email' =>'e-mail do usuário',
-            'usuario_password' => 'senha do usuário'
+            'usuario_email' => 'e-mail do usuário',
+            'usuario_password' => 'senha do usuário',
+            'usuario_force_password_change' => 'forçar troca de senha',
+            'usuario_password_expires_at' => 'data da próxima troca de senha',
         ];
     }
 
@@ -190,11 +202,11 @@ class PessoaRequest extends FormRequest
             'documento.unique' => 'Este documento já está cadastrado.',
             'cep.size' => 'O CEP deve conter 8 digitos.',
             'estado.size' => 'O estado deve conter 2 letras (UF).',
-
             'usuario_email.unique' => 'Este e-mail já está em uso por outro usuário.',
             'usuario_email.required' => 'O e-mail é obrigatório para criar o acesso.',
             'usuario_password.required' => 'A senha é obrigatória para criar o acesso.',
-            'usuario_password.confirmed' => 'A confirmação de senha não confere.'
+            'usuario_password.confirmed' => 'A confirmação da senha não confere.',
+            'usuario_password_expires_at.after' => 'A data da próxima troca deve ser futura.'
         ];
     }
 }
