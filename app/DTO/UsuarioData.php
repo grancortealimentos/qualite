@@ -27,13 +27,13 @@ class UsuarioData
     ): self
     {
         return new self(
-            $dados['usuario_name'] ?? $nomeCompleto,
-            $dados['usuario_email'],
-            true,
-            $dados['usuario_force_password_change'] ?? true,
-            $pessoaId,
-            $dados['usuario_password'],
-            $dados['usuario_password_expires_at'] ?? null,
+            name: $dados['usuario_name'] ?? $nomeCompleto,
+            email: $dados['usuario_email'],
+            isActive: true,
+            forcePasswordChange: $dados['usuario_force_password_change'] ?? true,
+            pessoaId: $pessoaId,
+            password: $dados['usuario_password'],
+            passwordResetExpiresAt: $dados['usuario_password_expires_at'] ?? null,
         );
     }
 
@@ -44,10 +44,10 @@ class UsuarioData
     public static function paraEdicao(array $dados): self
     {
         return new self(
-            $dados['usuario_name'],
-            $dados['usuario_email'],
-            $dados['usuario_force_password_change'] ?? false,
-            $dados['usuario_password_expires_at'] ?? null,
+            name: $dados['usuario_name'],
+            email: $dados['usuario_email'],
+            forcePasswordChange: $dados['usuario_force_password_change'] ?? false,
+            passwordResetExpiresAt: $dados['usuario_password_expires_at'] ?? null,
         );
     }
 

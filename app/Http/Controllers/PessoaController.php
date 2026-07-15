@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\DTO\PessoaData;
 use App\Http\Requests\PessoaRequest;
+use App\Http\Requests\UsuarioRequest;
 use App\Models\Pessoa;
 use App\Services\PessoaService;
 use App\Services\UsuarioService;
@@ -64,7 +65,8 @@ class PessoaController extends Controller
             $this->pessoaService->update(
                 $pessoa, 
                 PessoaData::fromArray($request->validated()),
-                $request->file('url_foto_perfil')
+                $request->file('url_foto_perfil'),
+                $this->extrairDadosUsuario($request->validated())
             );
     
             return redirect()
@@ -135,10 +137,39 @@ class PessoaController extends Controller
         }
 
         return [
-            'usuario_name'      => $validated['usuario_name'] ?? null,
-            'usuario_email'     => $validated['usuario_email'],
-            'usuario_password'  => $validated['usuario_password'],
-            'usuario_is_active' => $validated['usuario_is_active'] ?? true,
+            'usuario_name'                  => $validated['usuario_name'] ?? null,
+            'usuario_email'                 => $validated['usuario_email'],
+            'usuario_password'              => $validated['usuario_password'],
+            'usuario_force_password_change' => $validated['usuario_force_password_change'] ?? true,
+            'usuario_password_expires_at'   => $validated['usuario_password_expires_at'] ?? null,
         ];
+    }
+
+    public function atualizarUsuario(UsuarioRequest $request, Pessoa $pessoa): RedirectResponse
+    {
+        $usuario = $pessoa->usuario;
+        if($usuario === null) {
+            return back()
+                ->with('error', 'Esta pessoa não possui usuário para editar.');
+        }
+
+        try
+        {
+            $this->usuarioService->update($usuario, $request->validated());
+
+            return back()
+                ->with('status', 'Dados de acesso atualizados com sucesso.');
+        }
+        catch(ValidationException $e)
+        {
+            throw $e;
+        }
+        catch(Throwable $e)
+        {
+            report($e);
+            return back()
+                ->withInput()
+                ->with('error', 'Não foi possível atualizar os dados de acesso.');
+        }
     }
 }

@@ -60,23 +60,44 @@ class PessoaService
         }
     }
 
-    public function update(Pessoa $pessoa, PessoaData $data, ?UploadedFile $foto = null): Pessoa
+    public function update(
+        Pessoa $pessoa, 
+        PessoaData $data, 
+        ?UploadedFile $foto = null,
+        ?array $dadosUsuario = null
+    ): Pessoa
     {
-        return DB::transaction(function () use ($pessoa, $data, $foto) {
-            if($foto) {
-                $fotoAntiga = $pessoa->url_foto_perfil;
-                $data = $data->comFoto($this->salvarFoto($foto));
+        $caminhoNovaFoto = $foto ? $this->salvarFoto($foto) : null;
+        $fotoAntiga = $caminhoNovaFoto ? $pessoa->url_foto_perfil : null;
+
+        try
+        {
+            $pessoaAtualizada = DB::transaction(function () use ($pessoa, $data, $caminhoNovaFoto, $dadosUsuario) {
+                if($caminhoNovaFoto) {
+                    $data = $data->comFoto($caminhoNovaFoto);
+                }
 
                 $pessoa = $this->pessoaRepository->update($pessoa, $data);
-
-                //Só remove a antiga depois que o update deu certo
-                $this->removerFoto($fotoAntiga);
+                if($dadosUsuario !== null) {
+                    $this->usuarioService->create(
+                        $dadosUsuario,
+                        $pessoa->id,
+                        $pessoa->nome_completo,
+                    );
+                }
 
                 return $pessoa;
-            }
+            }); 
 
-            return $this->pessoaRepository->update($pessoa, $data);
-        });
+            $this->removerFoto($fotoAntiga);
+
+            return $pessoaAtualizada;
+        }
+        catch(Throwable $e) 
+        {
+            $this->removerFoto($caminhoNovaFoto);
+            throw $e;
+        }
     }
 
     public function delete(Pessoa $pessoa): bool

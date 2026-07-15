@@ -294,30 +294,102 @@
                 </div>
 
                 @if ($pessoa->usuario)
-                    {{-- JÁ TEM USUÁRIO: exibição em leitura + ações de acesso --}}
+                    {{-- JÁ TEM USUÁRIO: edição de credenciais + ações de acesso --}}
                     <div class="p-7">
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            <div class="bg-canvas p-4 rounded-xl border border-border">
-                                <span class="block text-[10px] text-ink-muted uppercase mb-1">Nome de Exibição</span>
-                                <span class="text-sm text-ink">{{ $pessoa->usuario->name }}</span>
-                            </div>
-                            <div class="bg-canvas p-4 rounded-xl border border-border">
-                                <span class="block text-[10px] text-ink-muted uppercase mb-1">E-mail de Login</span>
-                                <span class="text-sm text-ink">{{ $pessoa->usuario->email }}</span>
-                            </div>
-                            <div class="bg-canvas p-4 rounded-xl border border-border">
-                                <span class="block text-[10px] text-ink-muted uppercase mb-1">Status</span>
-                                <span
-                                    class="inline-flex items-center gap-1.5 text-sm {{ $pessoa->usuario->is_active ? 'text-success' : 'text-danger' }}">
-                                    <span
-                                        class="size-1.5 rounded-full {{ $pessoa->usuario->is_active ? 'bg-success' : 'bg-danger' }}"></span>
-                                    {{ $pessoa->usuario->is_active ? 'Ativo' : 'Revogado' }}
+
+                        {{-- Info: quando a senha foi alterada --}}
+                        <div class="flex items-center gap-2.5 p-3 rounded-lg bg-canvas border border-border mb-6">
+                            <i class="fa-solid fa-clock-rotate-left text-ink-muted"></i>
+                            <span class="text-xs text-ink-muted">
+                                Senha alterada:
+                                <span class="text-ink font-medium">
+                                    @if ($pessoa->usuario->password_changed_at)
+                                        {{ $pessoa->usuario->password_changed_at->format('d/m/Y H:i') }}
+                                        ({{ $pessoa->usuario->password_changed_at->diffForHumans() }})
+                                    @else
+                                        nunca — ainda usa a senha provisória
+                                    @endif
                                 </span>
+                            </span>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div>
+                                <label class="block text-[10px] text-ink-muted uppercase mb-1.5">Nome de Exibição
+                                    <span class="text-danger">*</span></label>
+                                <input type="text" name="usuario_name" form="form-editar-usuario"
+                                    value="{{ old('usuario_name', $pessoa->usuario->name) }}" required
+                                    class="w-full bg-canvas rounded-xl text-ink py-2.5 text-sm focus:ring-accent/20 transition-all @error('usuario_name') border-danger @else border-border focus:border-accent @enderror">
+                                @error('usuario_name')
+                                    <p class="text-xs text-danger mt-1">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            <div>
+                                <label class="block text-[10px] text-ink-muted uppercase mb-1.5">E-mail de Login
+                                    <span class="text-danger">*</span></label>
+                                <input type="email" name="usuario_email" form="form-editar-usuario"
+                                    value="{{ old('usuario_email', $pessoa->usuario->email) }}" required
+                                    class="w-full bg-canvas rounded-xl text-ink py-2.5 text-sm focus:ring-accent/20 transition-all @error('usuario_email') border-danger @else border-border focus:border-accent @enderror">
+                                @error('usuario_email')
+                                    <p class="text-xs text-danger mt-1">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            <div>
+                                <span class="block text-[10px] text-ink-muted uppercase mb-1.5">Status</span>
+                                <div class="bg-canvas p-2.5 rounded-xl border border-border">
+                                    <span
+                                        class="inline-flex items-center gap-1.5 text-sm {{ $pessoa->usuario->is_active ? 'text-success' : 'text-danger' }}">
+                                        <span
+                                            class="size-1.5 rounded-full {{ $pessoa->usuario->is_active ? 'bg-success' : 'bg-danger' }}"></span>
+                                        {{ $pessoa->usuario->is_active ? 'Ativo' : 'Revogado' }}
+                                    </span>
+                                </div>
                             </div>
                         </div>
 
-                        {{-- Ações de acesso. O atributo form="" aponta para os forms declarados
-                             FORA do form de pessoa (no fim do arquivo): HTML não permite aninhar. --}}
+                        {{-- Política de senha --}}
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                            <div class="flex items-center justify-between p-4 bg-canvas rounded-xl border border-border">
+                                <div>
+                                    <span class="block text-sm font-medium text-ink">Forçar Troca de Senha</span>
+                                    <span class="text-xs text-ink-muted">Exigir troca no próximo acesso.</span>
+                                </div>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" name="usuario_force_password_change" value="1"
+                                        form="form-editar-usuario"
+                                        @checked(old('usuario_force_password_change', $pessoa->usuario->force_password_change))
+                                        class="sr-only peer">
+                                    <div
+                                        class="w-11 h-6 bg-border rounded-full peer peer-checked:bg-caution after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-full transition-all">
+                                    </div>
+                                </label>
+                            </div>
+
+                            <div class="p-4 bg-canvas rounded-xl border border-border">
+                                <label class="block text-sm font-medium text-ink mb-1.5">Próxima Troca de Senha</label>
+                                <input type="datetime-local" name="usuario_password_expires_at"
+                                    form="form-editar-usuario"
+                                    value="{{ old('usuario_password_expires_at', $pessoa->usuario->password_reset_expires_at?->format('Y-m-d\TH:i')) }}"
+                                    class="w-full bg-transparent border-none p-0 text-sm text-ink focus:ring-0">
+                                <span class="text-xs text-ink-muted">Opcional. Após esta data, a troca será
+                                    exigida.</span>
+                                @error('usuario_password_expires_at')
+                                    <p class="text-xs text-danger mt-1">{{ $message }}</p>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <div class="flex justify-end mt-4">
+                            <button type="submit" form="form-editar-usuario"
+                                class="py-2 px-4 inline-flex items-center gap-x-2 text-sm font-medium rounded-xl bg-accent/10 text-accent-light border border-accent/20 hover:bg-accent/20 transition-all">
+                                <i class="fa-solid fa-floppy-disk"></i>
+                                {{ __('Salvar credenciais') }}
+                            </button>
+                        </div>
+
+                        {{-- Ações de acesso --}}
                         <div class="flex items-center justify-between gap-4 mt-6 pt-6 border-t border-border">
                             @if ($pessoa->usuario->is_active)
                                 <p class="text-xs text-ink-muted italic">
@@ -348,15 +420,6 @@
                          seção NÃO cria conta nenhuma. --}}
                     <div x-show="criarAcesso" x-collapse>
                         <div class="p-7 space-y-8">
-
-                            {{-- Aviso: comportamento fixo da conta --}}
-                            <div
-                                class="flex items-start gap-2.5 p-3 rounded-lg bg-caution/10 border border-caution/20 text-xs text-ink-muted">
-                                <i class="fa-solid fa-circle-info text-caution mt-0.5"></i>
-                                <span>A conta é criada <span class="text-ink font-medium">ativa</span> e a
-                                    <span class="text-ink font-medium">troca de senha no primeiro acesso é
-                                        obrigatória</span>.</span>
-                            </div>
 
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div class="md:col-span-2">
@@ -419,6 +482,44 @@
                                         class="w-full bg-canvas rounded-xl text-ink py-2.5 focus:ring-accent/20 transition-all border-border focus:border-accent">
                                 </div>
                             </div>
+
+                            {{-- Política de senha --}}
+                            <div class="pt-6 border-t border-border">
+                                <h4 class="text-xs font-semibold text-ink-muted uppercase tracking-widest mb-4">
+                                    Política de Senha</h4>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div
+                                        class="flex items-center justify-between p-4 bg-canvas rounded-xl border border-border">
+                                        <div>
+                                            <span class="block text-sm font-medium text-ink">Forçar Troca de
+                                                Senha</span>
+                                            <span class="text-xs text-ink-muted">Exigir troca no primeiro
+                                                acesso.</span>
+                                        </div>
+                                        <label class="relative inline-flex items-center cursor-pointer">
+                                            <input type="checkbox" name="usuario_force_password_change" value="1"
+                                                class="sr-only peer"
+                                                @checked(old('usuario_force_password_change', true))>
+                                            <div
+                                                class="w-11 h-6 bg-border rounded-full peer peer-checked:bg-caution after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-full transition-all">
+                                            </div>
+                                        </label>
+                                    </div>
+
+                                    <div class="p-4 bg-canvas rounded-xl border border-border">
+                                        <label class="block text-sm font-medium text-ink mb-1.5">Próxima Troca de
+                                            Senha</label>
+                                        <input type="datetime-local" name="usuario_password_expires_at"
+                                            value="{{ old('usuario_password_expires_at') }}"
+                                            class="w-full bg-transparent border-none p-0 text-sm text-ink focus:ring-0">
+                                        <span class="text-xs text-ink-muted">Opcional. Após esta data, a troca será
+                                            exigida.</span>
+                                        @error('usuario_password_expires_at')
+                                            <p class="text-xs text-danger mt-1">{{ $message }}</p>
+                                        @enderror
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -460,8 +561,14 @@
         </form>
 
         {{-- Forms das ações de acesso: ficam FORA do form de pessoa (aninhamento
-             é inválido em HTML). Os botões do card os acionam via atributo form="". --}}
+             é inválido em HTML). Os campos e botões do card os acionam via form="". --}}
         @if ($pessoa->usuario)
+            <form id="form-editar-usuario" method="POST" action="{{ route('pessoas.atualizar-usuario', $pessoa) }}"
+                class="hidden">
+                @csrf
+                @method('PATCH')
+            </form>
+
             <form id="form-revogar-usuario" method="POST" action="{{ route('pessoas.revogar', $pessoa) }}"
                 class="hidden">
                 @csrf

@@ -258,21 +258,12 @@
                 <div x-show="criarAcesso" x-collapse>
                     <div class="p-7 space-y-8">
 
-                        {{-- Aviso: comportamento fixo da conta --}}
-                        <div
-                            class="flex items-start gap-2.5 p-3 rounded-lg bg-caution/10 border border-caution/20 text-xs text-ink-muted">
-                            <i class="fa-solid fa-circle-info text-caution mt-0.5"></i>
-                            <span>A conta é criada <span class="text-ink font-medium">ativa</span> e a
-                                <span class="text-ink font-medium">troca de senha no primeiro acesso é
-                                    obrigatória</span>.</span>
-                        </div>
-
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div class="md:col-span-2">
                                 <label class="block text-sm font-medium text-ink-muted mb-1.5">Nome de Exibição</label>
                                 <input type="text" name="usuario_name" value="{{ old('usuario_name') }}"
                                     class="w-full bg-canvas rounded-xl text-ink py-2.5 focus:ring-accent/20 transition-all @error('usuario_name') border-danger @else border-border focus:border-accent @enderror"
-                                    placeholder="Deixe em branco para usar o nome da pessoa preenchido acima">
+                                    placeholder="Deixe em branco para usar o nome completo">
                                 @error('usuario_name')
                                     <p class="text-xs text-danger mt-1">{{ $message }}</p>
                                 @enderror
@@ -325,6 +316,41 @@
                                 <input :type="verSenha ? 'text' : 'password'" name="usuario_password_confirmation"
                                     :required="criarAcesso"
                                     class="w-full bg-canvas rounded-xl text-ink py-2.5 focus:ring-accent/20 transition-all border-border focus:border-accent">
+                            </div>
+                        </div>
+
+                        {{-- Política de senha --}}
+                        <div class="pt-6 border-t border-border">
+                            <h4 class="text-xs font-semibold text-ink-muted uppercase tracking-widest mb-4">
+                                Política de Senha</h4>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div
+                                    class="flex items-center justify-between p-4 bg-canvas rounded-xl border border-border">
+                                    <div>
+                                        <span class="block text-sm font-medium text-ink">Forçar Troca de Senha</span>
+                                        <span class="text-xs text-ink-muted">Exigir troca no primeiro acesso.</span>
+                                    </div>
+                                    <label class="relative inline-flex items-center cursor-pointer">
+                                        <input type="checkbox" name="usuario_force_password_change" value="1"
+                                            class="sr-only peer" @checked(old('usuario_force_password_change', true))>
+                                        <div
+                                            class="w-11 h-6 bg-border rounded-full peer peer-checked:bg-caution after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-full transition-all">
+                                        </div>
+                                    </label>
+                                </div>
+
+                                <div class="p-4 bg-canvas rounded-xl border border-border">
+                                    <label class="block text-sm font-medium text-ink mb-1.5">Próxima Troca de
+                                        Senha</label>
+                                    <input type="datetime-local" name="usuario_password_expires_at"
+                                        value="{{ old('usuario_password_expires_at') }}"
+                                        class="w-full bg-transparent border-none p-0 text-sm text-ink focus:ring-0">
+                                    <span class="text-xs text-ink-muted">Opcional. Após esta data, a troca será
+                                        exigida.</span>
+                                    @error('usuario_password_expires_at')
+                                        <p class="text-xs text-danger mt-1">{{ $message }}</p>
+                                    @enderror
+                                </div>
                             </div>
                         </div>
                     </div>

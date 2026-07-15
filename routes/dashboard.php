@@ -26,6 +26,8 @@ Route::middleware('auth')->group(function () {
     Route::put('/pessoas/{pessoa}', [PessoaController::class, 'update'])->name('pessoas.update');
     Route::patch('/pessoas/{pessoa}/toggle-status', [PessoaController::class, 'alternarStatus'])->name('pessoas.toggle-status');
     Route::delete('/pessoas/{pessoa}', [PessoaController::class, 'destroy'])->name('pessoas.destroy');
+
+    Route::patch('/pessoas/{pessoa}/usuario', [PessoaController::class, 'atualizarUsuario'])->name('pessoas.atualizar-usuario');
     Route::patch('/pessoas/{pessoa}/usuario/revogar', [PessoaController::class, 'revogarUsuario'])->name('pessoas.revogar');
     Route::patch('/pessoas/{pessoa}/usuario/reativar', [PessoaController::class, 'reativarUsuario'])->name('pessoas.reativar');
 });
