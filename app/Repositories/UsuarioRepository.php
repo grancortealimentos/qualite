@@ -73,4 +73,9 @@ class UsuarioRepository
 
         return $user->refresh();
     }
+
+    public function sincronizarPapel(User $user, int $papelId): void
+    {
+        $user->syncRoles([$papelId]);
+    }
 }

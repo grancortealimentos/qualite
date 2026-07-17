@@ -48,7 +48,10 @@ class UsuarioService
                 $nomeCompleto,
             );
 
-            return $this->usuarioRepository->create($usuarioData);
+            $user = $this->usuarioRepository->create($usuarioData);
+            $this->usuarioRepository->sincronizarPapel($user, $usuarioData->papelId);
+
+            return $user;
         });
     }
 
@@ -69,8 +72,10 @@ class UsuarioService
             }
 
             $usuarioData = UsuarioData::paraEdicao($dadosValidados);
+            $user = $this->usuarioRepository->update($user, $usuarioData);
+            $this->usuarioRepository->sincronizarPapel($user, $usuarioData->papelId);
 
-            return $this->usuarioRepository->update($user, $usuarioData);
+            return $user;
         });
     }
 
