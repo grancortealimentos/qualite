@@ -1,5 +1,26 @@
 {{-- resources/views/livewire/papeis/index.blade.php --}}
-<div class="flex flex-col gap-4">
+<div class="flex flex-col gap-4" x-data="{
+        modalAberto: false,
+        papelId: null,
+        papelNome: '',
+        excluindo: false,
+
+        confirmarExclusao(id, nome) {
+            this.papelId = id;
+            this.papelNome = nome;
+            this.modalAberto = true;
+        },
+
+        async excluir() {
+            this.excluindo = true;
+            // $wire.excluir() devolve uma Promise: o await garante que o modal
+            // só feche depois da resposta do servidor. Fechar antes deixaria a
+            // linha na tela por um instante após o toast de sucesso.
+            await $wire.excluir(this.papelId);
+            this.excluindo = false;
+            this.modalAberto = false;
+        },
+}">
 
     {{-- Toasts do Livewire (as ações não recarregam a página, então session() não serve) --}}
     <div x-data="{
@@ -125,19 +146,24 @@
                         <thead>
                             <tr>
                                 <th scope="col" class="px-6 py-3 text-start">
-                                    <span class="text-xs font-semibold uppercase text-primary-light">{{ __('Cód') }}</span>
+                                    <span
+                                        class="text-xs font-semibold uppercase text-primary-light">{{ __('Cód') }}</span>
                                 </th>
                                 <th scope="col" class="px-6 py-3 text-start">
-                                    <span class="text-xs font-semibold uppercase text-primary-light">{{ __('Papel') }}</span>
+                                    <span
+                                        class="text-xs font-semibold uppercase text-primary-light">{{ __('Papel') }}</span>
                                 </th>
                                 <th scope="col" class="px-6 py-3 text-start">
-                                    <span class="text-xs font-semibold uppercase text-ink-muted">{{ __('Permissões') }}</span>
+                                    <span
+                                        class="text-xs font-semibold uppercase text-ink-muted">{{ __('Permissões') }}</span>
                                 </th>
                                 <th scope="col" class="px-6 py-3 text-start">
-                                    <span class="text-xs font-semibold uppercase text-ink-muted">{{ __('Usuários atribuídos') }}</span>
+                                    <span
+                                        class="text-xs font-semibold uppercase text-ink-muted">{{ __('Usuários atribuídos') }}</span>
                                 </th>
                                 <th scope="col" class="px-6 py-3 text-end">
-                                    <span class="text-xs font-semibold uppercase text-ink-muted">{{ __('Ações') }}</span>
+                                    <span
+                                        class="text-xs font-semibold uppercase text-ink-muted">{{ __('Ações') }}</span>
                                 </th>
                             </tr>
                         </thead>
@@ -163,8 +189,8 @@
                                                 class="inline-flex items-center justify-center size-9 rounded-full {{ $ehSistema ? 'bg-warn/20' : 'bg-accent/20' }}">
                                                 <svg class="size-4 {{ $ehSistema ? 'text-warn' : 'text-accent-light' }}"
                                                     xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                                    viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                                    stroke-linecap="round" stroke-linejoin="round">
                                                     <rect width="18" height="11" x="3" y="11" rx="2" ry="2" />
                                                     <path d="M7 11V7a5 5 0 0 1 10 0v4" />
                                                 </svg>
@@ -184,8 +210,8 @@
                                         <div class="px-6 py-3">
                                             @if ($ehSistema)
                                                 {{-- O Admin não carrega permissões na tabela: o acesso
-                                                     total vem do bypass no Gate::before. Contagem 0 aqui
-                                                     seria enganosa. --}}
+                                                total vem do bypass no Gate::before. Contagem 0 aqui
+                                                seria enganosa. --}}
                                                 <span
                                                     class="inline-flex items-center gap-1.5 py-1 px-2 rounded-full text-xs font-medium bg-warn/15 text-warn">
                                                     {{ __('Acesso total') }}
@@ -205,8 +231,14 @@
                                         <div class="px-6 py-3">
                                             <span
                                                 class="inline-flex items-center gap-1.5 py-1 px-2 rounded-full text-xs font-medium {{ $papel->users_count > 0 ? 'bg-success/15 text-success' : 'bg-surface-hover text-ink-muted' }}">
-                                                <span
-                                                    class="size-1.5 inline-block rounded-full {{ $papel->users_count > 0 ? 'bg-success' : 'bg-ink-muted' }}"></span>
+                                                <svg class="shrink-0 size-3.5" xmlns="http://www.w3.org/2000/svg" width="24"
+                                                    height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+                                                    <circle cx="9" cy="7" r="4" />
+                                                    <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+                                                    <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                                                </svg>
                                                 {{ $papel->users_count }}
                                             </span>
                                         </div>
@@ -220,23 +252,20 @@
                                                 <a href="{{ route('papeis.edit', $papel) }}" wire:navigate
                                                     class="p-2 inline-flex items-center justify-center rounded-lg bg-primary hover:bg-primary-hover text-white"
                                                     title="{{ __('Editar') }}">
-                                                    <svg class="shrink-0 size-3.5" xmlns="http://www.w3.org/2000/svg"
-                                                        width="24" height="24" viewBox="0 0 24 24" fill="none"
-                                                        stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                                        stroke-linejoin="round">
+                                                    <svg class="shrink-0 size-3.5" xmlns="http://www.w3.org/2000/svg" width="24"
+                                                        height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                                         <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
                                                     </svg>
                                                 </a>
 
-                                                <button type="button" wire:click="excluir({{ $papel->id }})"
-                                                    wire:confirm="{{ __('Tem certeza que deseja excluir este papel?') }}"
-                                                    wire:loading.attr="disabled"
-                                                    class="p-2 inline-flex items-center justify-center rounded-lg bg-danger hover:bg-danger/80 text-white disabled:opacity-50"
+                                                <button type="button"
+                                                    @click="confirmarExclusao({{ $papel->id }}, @js($papel->name))"
+                                                    class="p-2 inline-flex items-center justify-center rounded-lg bg-danger hover:bg-danger/80 text-white"
                                                     title="{{ __('Excluir') }}">
-                                                    <svg class="shrink-0 size-3.5" xmlns="http://www.w3.org/2000/svg"
-                                                        width="24" height="24" viewBox="0 0 24 24" fill="none"
-                                                        stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                                        stroke-linejoin="round">
+                                                    <svg class="shrink-0 size-3.5" xmlns="http://www.w3.org/2000/svg" width="24"
+                                                        height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                                         <path d="M3 6h18" />
                                                         <path
                                                             d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
@@ -279,6 +308,61 @@
                             {{ $papeis->links() }}
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{-- Modal de confirmação de exclusão --}}
+    <div x-show="modalAberto" x-cloak class="fixed inset-0 z-[90] flex items-center justify-center p-4"
+        @keydown.escape.window="if (!excluindo) modalAberto = false" role="dialog" aria-modal="true">
+
+        {{-- Backdrop: clicar fora fecha, mas não durante a exclusão --}}
+        <div x-show="modalAberto" x-transition.opacity class="absolute inset-0 bg-black/60"
+            @click="if (!excluindo) modalAberto = false"></div>
+
+        <div x-show="modalAberto" x-transition:enter="transition ease-out duration-200"
+            x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100"
+            class="relative w-full max-w-md bg-surface border border-border rounded-xl shadow-2xl">
+
+            <div class="p-6 flex flex-col gap-4">
+                <div class="flex items-start gap-4">
+                    <span class="shrink-0 inline-flex items-center justify-center size-11 rounded-full bg-danger/15">
+                        <svg class="size-5 text-danger" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M3 6h18" />
+                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                        </svg>
+                    </span>
+
+                    <div class="min-w-0">
+                        <h3 class="text-base font-semibold text-ink">{{ __('Excluir papel') }}</h3>
+                        <p class="mt-1 text-sm text-ink-muted">
+                            {{ __('Esta ação não pode ser desfeita. O papel') }}
+                            <span class="font-medium text-ink" x-text="papelNome"></span>
+                            {{ __('e suas permissões serão removidos permanentemente.') }}
+                        </p>
+                    </div>
+                </div>
+
+                <div class="flex justify-end gap-2">
+                    <button type="button" @click="modalAberto = false" :disabled="excluindo"
+                        class="py-2 px-4 inline-flex items-center text-sm font-medium rounded-lg bg-surface-hover border border-border text-ink-muted hover:text-ink disabled:opacity-50">
+                        {{ __('Cancelar') }}
+                    </button>
+
+                    <button type="button" @click="excluir()" :disabled="excluindo"
+                        class="py-2 px-4 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg bg-danger border border-transparent text-white hover:bg-danger/80 disabled:opacity-50 disabled:cursor-not-allowed">
+                        <svg x-show="excluindo" x-cloak class="shrink-0 size-4 animate-spin" fill="none"
+                            viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4">
+                            </circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.37 0 0 5.37 0 12h4z">
+                            </path>
+                        </svg>
+                        <span x-text="excluindo ? '{{ __('Excluindo...') }}' : '{{ __('Excluir papel') }}'"></span>
+                    </button>
                 </div>
             </div>
         </div>
