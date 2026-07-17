@@ -69,6 +69,37 @@
                         </li>
                     </ul>
                 </li>
+
+                {{-- Configurações --}}
+                @role(config('permissoes.papel_administrador'))
+                <li x-data="{ open: {{ request()->routeIs('papeis.*') ? 'true' : 'false' }} }">
+                    <button type="button" @click="open = !open"
+                        class="w-full flex items-center gap-x-3 py-2 px-2.5 text-sm text-ink-muted rounded-lg hover:bg-surface hover:text-ink">
+
+                        <i class="bi bi-gear" :class="open && 'hidden'"></i>
+                        <i class="bi bi-gear-fill" :class="!open && 'hidden'"></i>
+
+                        Configurações
+                        <svg class="ms-auto size-4 transition-transform" :class="open && 'rotate-180'"
+                            xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="m6 9 6 6 6-6" />
+                        </svg>
+                    </button>
+
+                    <ul x-show="open" x-collapse class="ps-8 pt-1 space-y-1">
+                        <li>
+                            <a href="{{ route('papeis.index') }}" @class([
+                                'flex py-2 px-2.5 text-sm rounded-lg',
+                                'bg-primary/15 text-primary-light font-medium' => request()->routeIs('papeis.*'),
+                                'text-ink-muted hover:bg-surface hover:text-ink' => !request()->routeIs('papeis.*'),
+                            ])>
+                                Permissões de acesso
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                @endrole
             </ul>
         </nav>
 
@@ -88,17 +119,16 @@
                         {{ auth()->user()?->email }}
                     </span>
                 </span>
-                <svg class="ms-auto shrink-0 size-4 text-ink-muted transition-transform"
-                    :class="open && 'rotate-180'" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                    stroke-linejoin="round">
+                <svg class="ms-auto shrink-0 size-4 text-ink-muted transition-transform" :class="open && 'rotate-180'"
+                    xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="m18 15-6-6-6 6" />
                 </svg>
             </button>
 
             <div x-show="open" x-cloak @click.outside="open = false"
                 class="absolute start-3 end-3 bottom-full mb-2 bg-surface border border-border shadow-xl rounded-lg">
-               
+
                 <div class="p-1.5">
                     <form method="POST" action="{{ route('logout') }}" x-data="{ saindo: false }"
                         @submit="saindo = true">
@@ -106,9 +136,9 @@
                         <button type="submit" :disabled="saindo"
                             class="w-full text-start flex items-center gap-x-3 py-2 px-3 rounded-lg text-sm text-danger hover:bg-danger/10 disabled:opacity-50 disabled:cursor-not-allowed">
                             {{-- Ícone de sair (some quando está saindo) --}}
-                            <svg x-show="!saindo" class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg"
-                                width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <svg x-show="!saindo" class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24"
+                                height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round">
                                 <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
                                 <polyline points="16 17 21 12 16 7" />
                                 <line x1="21" x2="9" y1="12" y2="12" />

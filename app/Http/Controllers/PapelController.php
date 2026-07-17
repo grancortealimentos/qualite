@@ -6,8 +6,8 @@ use App\DTO\PapelData;
 use App\Http\Requests\PapelRequest;
 use App\Models\Papel;
 use App\Services\PapelService;
-use Dotenv\Exception\ValidationException;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 
 
@@ -26,7 +26,7 @@ class PapelController extends Controller
 
     public function edit(Papel $papel): View
     {
-        $papel->load('permissions');
+        $papel->load('permissions')->loadCount('users');
         return view('dashboard.permissoes.edit', [
             'papel' => $papel,
             'grupos' => $this->gruposOrdenados(),

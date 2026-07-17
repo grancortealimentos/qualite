@@ -98,3 +98,63 @@ Alpine.data('endereco', (inicial = {}) => ({
         }
     },
 }));
+
+/**
+ * Estado do grid de permissões (papéis).
+ *
+ * Fica aqui, no bundle, e NÃO num @push('scripts') do Blade: telas alcançadas
+ * por wire:navigate têm o Alpine inicializado antes de os scripts do body novo
+ * executarem, e o x-data quebraria com "gridPermissoes is not defined".
+ * Carregado uma vez pelo Vite, sobrevive a qualquer navegação.
+ *
+ * Fonte única da verdade: o array `selecionadas`. Os checkboxes de módulo e o
+ * "selecionar tudo" são DERIVADOS dele — nunca guardam estado próprio. É isso
+ * que impede a dessincronização clássica (marcar o módulo, desmarcar um item,
+ * e o pai continuar marcado).
+ */
+window.gridPermissoes = ({ todas, iniciais }) => ({
+    todas: todas,
+    selecionadas: iniciais ?? [],
+
+    /**
+     * Getter/setter: lido para saber se tudo está marcado, escrito quando o
+     * usuário clica no "selecionar tudo".
+     */
+    get tudoMarcado() {
+        return this.selecionadas.length === this.todas.length;
+    },
+    set tudoMarcado(valor) {
+        this.selecionadas = valor ? [...this.todas] : [];
+    },
+
+    /**
+     * Estado indeterminado: algo marcado, mas não tudo.
+     */
+    get tudoParcial() {
+        return this.selecionadas.length > 0 && !this.tudoMarcado;
+    },
+
+    moduloMarcado(nomes) {
+        return nomes.every(n => this.selecionadas.includes(n));
+    },
+
+    moduloParcial(nomes) {
+        return nomes.some(n => this.selecionadas.includes(n))
+            && !this.moduloMarcado(nomes);
+    },
+
+    /**
+     * Marca ou desmarca o módulo inteiro.
+     *
+     * O filter na hora de marcar evita duplicar nomes que já estavam no array —
+     * duplicata faria a contagem mentir e quebraria o tudoMarcado.
+     */
+    alternarModulo(nomes, marcar) {
+        if (marcar) {
+            const novos = nomes.filter(n => !this.selecionadas.includes(n));
+            this.selecionadas = [...this.selecionadas, ...novos];
+        } else {
+            this.selecionadas = this.selecionadas.filter(n => !nomes.includes(n));
+        }
+    },
+});
