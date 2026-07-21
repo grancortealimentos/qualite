@@ -15,7 +15,10 @@ class UsuarioRequest extends FormRequest
     protected function prepareForValidation(): void
     {
         $this->merge([
-            'usuario_force_password_change' => $this->boolean('usuario_force_password_change')
+            'usuario_force_password_change' => $this->boolean('usuario_force_password_change'),
+            'usuario_papel_id' => $this->filled('usuario_papel_id')
+                ? (int) $this->input('usuario_papel_id')
+                : null,
         ]);
     }
 
@@ -34,13 +37,20 @@ class UsuarioRequest extends FormRequest
             ],
             'usuario_force_password_change' => ['boolean'],
             'usuario_password_expires_at' => ['nullable', 'date'],
+            'usuario_papel_id' => [
+                'required',
+                'integer',
+                Rule::exists('roles', 'id')->where('guard_name', 'web'),
+            ],
         ];
     }
 
     public function messages(): array
     {
         return [
-            'usuario_email.unique' => 'Este e-mail já está em uso por outro usuário.'
+            'usuario_email.unique' => 'Este e-mail já está em uso por outro usuário.',
+            'usuario_papel_id.required' => 'Selecione o papel do usuário.',
+            'usuario_papel_id.exists'   => 'O papel selecionado não existe.',
         ];
     }
 }

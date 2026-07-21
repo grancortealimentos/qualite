@@ -78,9 +78,11 @@ class PessoaService
                 }
 
                 $pessoa = $this->pessoaRepository->update($pessoa, $data);
-                if($dadosUsuario !== null) {
-                    $this->usuarioService->update(
-                        
+                if($dadosUsuario !== null && $pessoa->usuario === null) {
+                    $this->usuarioService->create(
+                        $dadosUsuario,
+                        $pessoa->id,
+                        $pessoa->nome_completo,
                     );
                 }
 
