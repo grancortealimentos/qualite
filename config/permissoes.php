@@ -32,9 +32,11 @@ return [
     |
     | Códigos reservados (ainda sem permissões):
     |   01 - Dashboard
+    |   02 - Pessoas + Usuarios
     |   03 - Papéis
     |   04 - Logs de erro
     |   05 - Propriedades
+    |   06 - Filiais
     */
     'grupos' => [
         'pessoas' => [
@@ -54,6 +56,18 @@ return [
                 'usuarios.gerenciar_permissoes' => 'Atribuir permissões diretas ao usuário',
                 'usuarios.revogar' => 'Revogar acesso de usuário',
                 'usuarios.reativar' => 'Reativar acesso de usuário',         
+            ],
+        ],
+
+        'filiais' => [
+            'codigo' => '06',
+            'label' => 'Filiais',
+            'permissoes' => [
+                'filiais.visualizar' => 'Listar e visualizar filiais',
+                'filiais.criar' => 'Cadastrar nova filial',
+                'filiais.editar' => 'Editar filial',
+                'filiais.excluir' => 'Excluir filial',
+                'filiais.status' => 'Ativar ou inativar filial',
             ],
         ],
     ],
