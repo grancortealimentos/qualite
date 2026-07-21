@@ -39,12 +39,9 @@ class PessoaRequest extends FormRequest
                 ? strtoupper($this->input('estado'))
                 : null,
 
-            'usuario_papel_id' => [
-                'exclude_unless:criar_usuario,true',
-                'required',
-                'integer',
-                Rule::exists('roles', 'id')->where('guard_name', 'web'),
-            ],
+            'usuario_papel_id' => $this->filled('usuario_papel_id')
+                ? (int) $this->input('usuario_papel_id')
+                : null,
         ]);
     }
 
@@ -115,10 +112,12 @@ class PessoaRequest extends FormRequest
             ],
 
             'usuario_papel_id' => [
-                'nullable',
-                'required_if:criar_usuario,1',
+                // exclude_unless igual aos demais usuario_*: com required_if,1 a regra
+                // não dispararia (criar_usuario já é boolean, não '1').
+                'exclude_unless:criar_usuario,true',
+                'required',
                 'integer',
-                Rule::exists('roles', 'id')->where('guard_name', 'web')
+                Rule::exists('roles', 'id')->where('guard_name', 'web'),
             ],
         ];
     }
@@ -222,8 +221,8 @@ class PessoaRequest extends FormRequest
             'usuario_password.required' => 'A senha é obrigatória para criar o acesso.',
             'usuario_password.confirmed' => 'A confirmação da senha não confere.',
             'usuario_password_expires_at.after' => 'A data da próxima troca deve ser futura.',
-            'usuario_papel_id.required_if' => 'Selecione o papel do usuário.',
-            'usuario_papel_id.exists'      => 'O papel selecionado não existe.',
+            'usuario_papel_id.required' => 'Selecione o papel do usuário.',
+            'usuario_papel_id.exists'   => 'O papel selecionado não existe.',
         ];
     }
 }

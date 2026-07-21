@@ -280,6 +280,32 @@
                                 @enderror
                             </div>
 
+                            {{-- Papel do usuário (RN-012: toda conta tem exatamente 1 papel).
+                                 Fica junto das credenciais porque é decisão de acesso.
+                                 :required espelha o exclude_unless do Request: só obrigatório
+                                 com a seção de acesso ativa. --}}
+                            <div class="md:col-span-2">
+                                <label class="block text-sm font-medium text-ink-muted mb-1.5">
+                                    Papel <span class="text-danger">*</span>
+                                </label>
+                                <select name="usuario_papel_id" :required="criarAcesso"
+                                    class="w-full bg-canvas rounded-xl text-ink py-2.5 focus:ring-accent/20 transition-all @error('usuario_papel_id') border-danger @else border-border focus:border-accent @enderror">
+                                    <option value="">Selecione um papel...</option>
+                                    {{-- == e não ===: old() de select volta string ("3"),
+                                         $papel->id é int; com === a seleção se perderia
+                                         após um erro de validação. --}}
+                                    @foreach ($papeis as $papel)
+                                        <option value="{{ $papel->id }}"
+                                            @selected(old('usuario_papel_id') == $papel->id)>
+                                            {{ $papel->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                @error('usuario_papel_id')
+                                    <p class="text-xs text-danger mt-1">{{ $message }}</p>
+                                @enderror
+                            </div>
+
                             <div>
                                 <label class="block text-sm font-medium text-ink-muted mb-1.5">Senha Provisória
                                     <span class="text-danger">*</span></label>

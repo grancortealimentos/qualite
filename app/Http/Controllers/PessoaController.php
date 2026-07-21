@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\DTO\PessoaData;
 use App\Http\Requests\PessoaRequest;
 use App\Http\Requests\UsuarioRequest;
+use App\Models\Papel;
 use App\Models\Pessoa;
 use App\Services\PessoaService;
 use App\Services\UsuarioService;
@@ -22,7 +23,9 @@ class PessoaController extends Controller
 
     public function create(): View
     {
-        return view('dashboard.pessoas.create');
+        return view('dashboard.pessoas.create', [
+            'papeis' => Papel::orderBy('name')->get(['id', 'name']),
+        ]);
     }
 
     public function store(PessoaRequest $request): RedirectResponse
@@ -142,6 +145,7 @@ class PessoaController extends Controller
             'usuario_password'              => $validated['usuario_password'],
             'usuario_force_password_change' => $validated['usuario_force_password_change'] ?? true,
             'usuario_password_expires_at'   => $validated['usuario_password_expires_at'] ?? null,
+            'usuario_papel_id'              => $validated['usuario_papel_id'],
         ];
     }
 
