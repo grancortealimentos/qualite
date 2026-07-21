@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Models\Filial;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\DB;
 
 final class FilialRepository
 {
@@ -71,5 +72,24 @@ final class FilialRepository
     public function delete(Filial $filial): bool 
     {
         return (bool) $filial->delete();
+    }
+
+    /**
+     * Inverte status ativo/inativo diretamente no banco de dados (evita corrida).
+     * Usa expressão SQL para não depender do valor lido previamente em memória.
+    */
+    public function alterarStatus(Filial $filial): bool
+    {
+        return (bool) $filial->update([
+            'eh_ativo' => DB::raw('NOT eh_ativo'),
+        ]);
+    }
+
+    public function existeCnpj(string $cnpj, ?int $ignorarId = null): bool
+    {
+        return Filial::query()
+            ->where('cnpj', $cnpj)
+            ->when($ignorarId, fn ($query) => $query->where('id', '!=', $ignorarId))
+            ->exists();
     }
 }

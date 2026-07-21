@@ -16,7 +16,7 @@ return new class extends Migration
             $table->boolean('eh_ativo')->default(true);
             $table->string('razao_social');
             $table->string('nome_fantasia')->nullable();
-            $table->string('cnpj')->nullable();
+            $table->string('cnpj')->unique()->nullable();
             $table->string('ie')->nullable();
             $table->string('cep', 8)->nullable();
             $table->string('logradouro')->nullable();
