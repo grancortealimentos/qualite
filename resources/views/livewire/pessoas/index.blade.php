@@ -54,6 +54,7 @@
                 <h2 class="text-lg font-semibold text-ink">{{ __('Lista de Pessoas') }}</h2>
             </div>
 
+            @can('pessoas.criar')
             <a href="{{ route('pessoas.create') }}" wire:navigate
                 class="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg bg-primary border border-transparent text-white hover:bg-primary-hover focus:outline-hidden focus:ring-2 focus:ring-primary/40">
                 <svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
@@ -64,6 +65,7 @@
                 </svg>
                 {{ __('Novo') }}
             </a>
+            @endcan
         </div>
 
         {{-- Linha de busca --}}
@@ -287,6 +289,7 @@
 
                                     <td class="size-px whitespace-nowrap">
                                         <div class="px-6 py-3 flex justify-end items-center gap-x-1.5">
+                                            @can('pessoas.editar')
                                             <a href="{{ route('pessoas.edit', $pessoa) }}" wire:navigate
                                                 class="p-2 inline-flex items-center justify-center rounded-lg bg-primary hover:bg-primary-hover text-white"
                                                 title="{{ __('Editar') }}">
@@ -296,7 +299,9 @@
                                                     <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
                                                 </svg>
                                             </a>
+                                            @endcan
 
+                                            @can('pessoas.status')
                                             <button type="button" wire:click="alternarStatus({{ $pessoa->id }})"
                                                 wire:loading.attr="disabled"
                                                 class="p-2 inline-flex items-center justify-center rounded-lg bg-warn hover:bg-warn-hover text-canvas disabled:opacity-50"
@@ -308,7 +313,9 @@
                                                     <path d="M18.4 6.6a9 9 0 1 1-12.77.04" />
                                                 </svg>
                                             </button>
+                                            @endcan
 
+                                            @can('pessoas.excluir')
                                             <button type="button" wire:click="excluir({{ $pessoa->id }})"
                                                 wire:confirm="{{ __('Tem certeza que deseja excluir esta pessoa?') }}"
                                                 wire:loading.attr="disabled"
@@ -322,6 +329,7 @@
                                                         d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
                                                 </svg>
                                             </button>
+                                            @endcan
                                         </div>
                                     </td>
                                 </tr>

@@ -82,6 +82,10 @@ class Index extends Component
 
     public function alternarStatus(int $pessoaId, PessoaService $pessoaService): void
     {
+        if(!auth()->user()->can('pessoas.status')) {
+            $this->dispatch('toast', 'error', 'Você não tem permissão para alterar o status.');
+        }
+
         $pessoa = Pessoa::findOrFail($pessoaId);
         $pessoa = $pessoaService->alternarStatus($pessoa);
 
@@ -96,6 +100,10 @@ class Index extends Component
 
     public function excluir(int $pessoaId, PessoaService $pessoaService): void
     {
+        if(!auth()->user()->can('pessoas.excluir')) {
+            $this->dispatch('toast', 'error', 'Você não tem permissão para excluir o status.');
+        }
+
         $pessoa = Pessoa::findOrFail($pessoaId);
         $pessoaService->delete($pessoa);
 

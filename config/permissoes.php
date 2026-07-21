@@ -53,7 +53,7 @@ return [
                 'usuarios.excluir' => 'Excluir usuários',
                 'usuarios.gerenciar_permissoes' => 'Atribuir permissões diretas ao usuário',
                 'usuarios.revogar' => 'Revogar acesso de usuário',
-                'usuarios.reativar' => 'Reativar acesso de usuário'         
+                'usuarios.reativar' => 'Reativar acesso de usuário',         
             ],
         ],
     ],
