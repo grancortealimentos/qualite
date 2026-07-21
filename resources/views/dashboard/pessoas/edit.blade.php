@@ -313,7 +313,8 @@
                             </span>
                         </div>
 
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        {{-- 4 colunas: Nome, E-mail, Papel, Status --}}
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                             <div>
                                 <label class="block text-[10px] text-ink-muted uppercase mb-1.5">Nome de Exibição
                                     <span class="text-danger">*</span></label>
@@ -332,6 +333,26 @@
                                     value="{{ old('usuario_email', $pessoa->usuario->email) }}" required
                                     class="w-full bg-canvas rounded-xl text-ink py-2.5 text-sm focus:ring-accent/20 transition-all @error('usuario_email') border-danger @else border-border focus:border-accent @enderror">
                                 @error('usuario_email')
+                                    <p class="text-xs text-danger mt-1">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            {{-- Papel: pertence ao form-editar-usuario via form="".
+                                 roles->first() reflete o RN-012 (exatamente 1 papel). --}}
+                            <div>
+                                <label class="block text-[10px] text-ink-muted uppercase mb-1.5">Papel
+                                    <span class="text-danger">*</span></label>
+                                <select name="usuario_papel_id" form="form-editar-usuario" required
+                                    class="w-full bg-canvas rounded-xl text-ink py-2.5 text-sm focus:ring-accent/20 transition-all @error('usuario_papel_id') border-danger @else border-border focus:border-accent @enderror">
+                                    <option value="">Selecione...</option>
+                                    @foreach ($papeis as $papel)
+                                        <option value="{{ $papel->id }}"
+                                            @selected(old('usuario_papel_id', $pessoa->usuario->roles->first()?->id) == $papel->id)>
+                                            {{ $papel->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                @error('usuario_papel_id')
                                     <p class="text-xs text-danger mt-1">{{ $message }}</p>
                                 @enderror
                             </div>
@@ -414,10 +435,6 @@
                     </div>
                 @else
                     {{-- SEM USUÁRIO: permite criar --}}
-                    {{-- ⚠️ ATENÇÃO: os nomes já estão alinhados ao backend, mas o
-                         PessoaController::update / PessoaService::update ainda NÃO
-                         orquestram a criação de usuário. Até isso ser feito, esta
-                         seção NÃO cria conta nenhuma. --}}
                     <div x-show="criarAcesso" x-collapse>
                         <div class="p-7 space-y-8">
 
@@ -440,6 +457,25 @@
                                         value="{{ old('usuario_email', $pessoa->email) }}" :required="criarAcesso"
                                         class="w-full bg-canvas rounded-xl text-ink py-2.5 focus:ring-accent/20 transition-all @error('usuario_email') border-danger @else border-border focus:border-accent @enderror">
                                     @error('usuario_email')
+                                        <p class="text-xs text-danger mt-1">{{ $message }}</p>
+                                    @enderror
+                                </div>
+
+                                {{-- Papel (RN-012). :required espelha o exclude_unless do Request. --}}
+                                <div class="md:col-span-2">
+                                    <label class="block text-sm font-medium text-ink-muted mb-1.5">Papel
+                                        <span class="text-danger">*</span></label>
+                                    <select name="usuario_papel_id" :required="criarAcesso"
+                                        class="w-full bg-canvas rounded-xl text-ink py-2.5 focus:ring-accent/20 transition-all @error('usuario_papel_id') border-danger @else border-border focus:border-accent @enderror">
+                                        <option value="">Selecione um papel...</option>
+                                        @foreach ($papeis as $papel)
+                                            <option value="{{ $papel->id }}"
+                                                @selected(old('usuario_papel_id') == $papel->id)>
+                                                {{ $papel->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    @error('usuario_papel_id')
                                         <p class="text-xs text-danger mt-1">{{ $message }}</p>
                                     @enderror
                                 </div>

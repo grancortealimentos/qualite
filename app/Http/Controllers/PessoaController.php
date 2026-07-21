@@ -57,8 +57,12 @@ class PessoaController extends Controller
 
     public function edit(Pessoa $pessoa): View
     {
-        $pessoa = $pessoa->load('usuario');
-        return view('dashboard.pessoas.edit', compact('pessoa'));
+        $pessoa = $pessoa->load('usuario.roles');
+
+        return view('dashboard.pessoas.edit', [
+            'pessoa' => $pessoa,
+            'papeis' => Papel::orderBy('name')->get(['id', 'name']),
+        ]);
     }
 
     public function update(PessoaRequest $request, Pessoa $pessoa): RedirectResponse
