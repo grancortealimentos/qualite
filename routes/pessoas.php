@@ -4,7 +4,7 @@ use App\Http\Controllers\PessoaController;
 use Illuminate\Support\Facades\Route;
 use App\Livewire\Pessoas\Index as PessoaIndex;
 
-/*
+        /*
         |----------------------------------------------------------------------
         | Pessoas (módulo 02)
         |----------------------------------------------------------------------

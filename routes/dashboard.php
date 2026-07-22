@@ -24,6 +24,6 @@ Route::middleware('auth')->group(function () {
 
         require __DIR__ .'/pessoas.php';
         require __DIR__ .'/perfis.php';
-        
+        require __DIR__ .'/filiais.php';
     });
 });
