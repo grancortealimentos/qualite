@@ -172,7 +172,8 @@
                 @endif
 
                 @if ($filtroAtivo === '0')
-                    <span class="inline-flex items-center gap-1.5 py-1 px-2.5 rounded-full text-xs bg-danger/15 text-danger">
+                    <span
+                        class="inline-flex items-center gap-1.5 py-1 px-2.5 rounded-full text-xs bg-danger/15 text-danger">
                         {{ __('Somente inativas') }}
                     </span>
                 @elseif ($filtroAtivo === 'todos')
@@ -237,12 +238,19 @@
                                         ['bg' => 'bg-cyan-500/20', 'text' => 'text-cyan-400'],
                                     ];
                                     $avatarStyle = $avatarStyles[$filial->id % count($avatarStyles)];
+
+                                    // Iniciais ignorando dígitos: "10101-GRAN CORTE" => "GR"
+                                    $iniciais = \Illuminate\Support\Str::of($filial->razao_social)
+                                        ->replaceMatches('/[^a-zA-Z]/', '')
+                                        ->substr(0, 2)
+                                        ->upper();
                                 @endphp
                                 <tr wire:key="filial-{{ $filial->id }}"
                                     class="hover:bg-surface-hover {{ $filial->eh_ativo ? '' : 'opacity-60' }}">
                                     <td class="size-px whitespace-nowrap">
                                         <div class="px-6 py-3">
-                                            <span class="text-sm font-medium text-primary-light">#{{ $filial->id }}</span>
+                                            <span
+                                                class="text-sm font-medium text-primary-light">#{{ $filial->codigo }}</span>
                                         </div>
                                     </td>
                                     <td class="h-px w-72 min-w-72">
@@ -250,7 +258,7 @@
                                             <span
                                                 class="inline-flex items-center justify-center size-9 rounded-full {{ $avatarStyle['bg'] }}">
                                                 <span
-                                                    class="text-xs font-semibold {{ $avatarStyle['text'] }}">{{ Str::of($filial->razao_social)->substr(0, 2)->upper() }}</span>
+                                                    class="text-xs font-semibold {{ $avatarStyle['text'] }}">{{ $iniciais }}</span>
                                             </span>
                                             <div class="min-w-0">
                                                 <span
@@ -266,7 +274,7 @@
                                         <div class="px-6 py-3">
                                             @if ($filial->cnpj)
                                                 <span
-                                                    class="block text-sm text-ink">{{ $filial->cnpj_formatado ?? $filial->cnpj }}</span>
+                                                    class="block text-sm text-ink">{{ $filial->cnpj_formatado }}</span>
                                                 @if ($filial->ie)
                                                     <span class="block text-xs text-ink-muted">{{ __('IE') }}:
                                                         {{ $filial->ie }}</span>
@@ -294,9 +302,10 @@
                                                 <a href="{{ route('filiais.edit', $filial) }}" wire:navigate
                                                     class="p-2 inline-flex items-center justify-center rounded-lg bg-primary hover:bg-primary-hover text-white"
                                                     title="{{ __('Editar') }}">
-                                                    <svg class="shrink-0 size-3.5" xmlns="http://www.w3.org/2000/svg" width="24"
-                                                        height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                    <svg class="shrink-0 size-3.5" xmlns="http://www.w3.org/2000/svg"
+                                                        width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                                        stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                                        stroke-linejoin="round">
                                                         <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
                                                     </svg>
                                                 </a>
@@ -307,9 +316,10 @@
                                                     wire:loading.attr="disabled"
                                                     class="p-2 inline-flex items-center justify-center rounded-lg bg-warn hover:bg-warn-hover text-canvas disabled:opacity-50"
                                                     title="{{ $filial->eh_ativo ? __('Desativar') : __('Ativar') }}">
-                                                    <svg class="shrink-0 size-3.5" xmlns="http://www.w3.org/2000/svg" width="24"
-                                                        height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                    <svg class="shrink-0 size-3.5" xmlns="http://www.w3.org/2000/svg"
+                                                        width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                                        stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                                        stroke-linejoin="round">
                                                         <path d="M12 2v10" />
                                                         <path d="M18.4 6.6a9 9 0 1 1-12.77.04" />
                                                     </svg>
@@ -322,9 +332,10 @@
                                                     wire:loading.attr="disabled"
                                                     class="p-2 inline-flex items-center justify-center rounded-lg bg-danger hover:bg-danger/80 text-white disabled:opacity-50"
                                                     title="{{ __('Excluir') }}">
-                                                    <svg class="shrink-0 size-3.5" xmlns="http://www.w3.org/2000/svg" width="24"
-                                                        height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                    <svg class="shrink-0 size-3.5" xmlns="http://www.w3.org/2000/svg"
+                                                        width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                                        stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                                        stroke-linejoin="round">
                                                         <path d="M3 6h18" />
                                                         <path
                                                             d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />

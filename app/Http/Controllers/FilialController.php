@@ -41,7 +41,8 @@ class FilialController extends Controller
                 ->route('filiais.index')
                 ->with('status', 'Registro cadastrado com sucesso.');
         } 
-        catch (ValidationException $e) {
+        catch (ValidationException $e) 
+        {
             throw $e;
         } 
         catch (Throwable $e) 
@@ -66,7 +67,8 @@ class FilialController extends Controller
                 ->route('filiais.index')
                 ->with('status', 'Registro atualizado com sucesso.');
         } 
-        catch (ValidationException $e) {
+        catch (ValidationException $e) 
+        {
             throw $e;
         } 
         catch (Throwable $e) 

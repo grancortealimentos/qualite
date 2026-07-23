@@ -5,6 +5,7 @@ namespace App\DTO;
 final class FilialData
 {
     public function __construct(
+        public readonly string $codigo,
         public readonly string $razaoSocial,
         public readonly bool $ehAtivo,
         public readonly ?string $nomeFantasia = null,
@@ -43,6 +44,7 @@ final class FilialData
     public function toArray(): array
     {
         return [
+            'codigo' => $this->codigo,
             'razao_social' => $this->razaoSocial,
             'eh_ativo' => $this->ehAtivo,
             'nome_fantasia' => $this->nomeFantasia,
@@ -66,6 +68,7 @@ final class FilialData
     private static function mapear(array $data): self
     {
         return new self(
+            $data['codigo'],
             $data['razao_social'],
             $data['eh_ativo'] ?? true,
             $data['nome_fantasia'] ?? null,
@@ -75,6 +78,7 @@ final class FilialData
             $data['logradouro'] ?? null,
             $data['numero'] ?? null,
             $data['bairro'] ?? null,
+            $data['cidade'] ?? null,
             $data['estado'] ?? null,
             $data['pais'] ?? null,
             $data['latitude'] ?? null,

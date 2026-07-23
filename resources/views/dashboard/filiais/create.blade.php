@@ -93,7 +93,18 @@
                         </div>
 
                         <div class="grid grid-cols-1 md:grid-cols-6 gap-5">
-                            <div class="md:col-span-6">
+                            <div class="md:col-span-2">
+                                <label class="block text-sm font-medium text-ink-muted mb-1.5">Código <span
+                                        class="text-danger">*</span></label>
+                                <input type="text" name="codigo" value="{{ old('codigo') }}" required
+                                    placeholder="Ex.: 10101"
+                                    class="w-full bg-canvas rounded-xl text-ink py-2.5 focus:ring-primary/20 transition-all @error('codigo') border-danger @else border-border focus:border-primary @enderror">
+                                @error('codigo')
+                                    <p class="text-xs text-danger mt-1">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            <div class="md:col-span-4">
                                 <label class="block text-sm font-medium text-ink-muted mb-1.5">Razão Social <span
                                         class="text-danger">*</span></label>
                                 <input type="text" name="razao_social" value="{{ old('razao_social') }}" required

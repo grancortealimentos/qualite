@@ -36,6 +36,7 @@ class FilialRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'codigo'        => ['required', 'string', 'max:20'],
             'eh_ativo'      => ['boolean'],
             'razao_social'  => ['required', 'string', 'max:255'],
             'nome_fantasia' => ['nullable', 'string', 'max:255'],

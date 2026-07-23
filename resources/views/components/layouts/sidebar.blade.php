@@ -67,6 +67,15 @@
                                 Pessoas
                             </a>
                         </li>
+                        <li>
+                            <a href="{{ route('filiais.index') }}" @class([
+                                'flex py-2 px-2.5 text-sm rounded-lg',
+                                'bg-primary/15 text-primary-light font-medium' => request()->routeIs('filiais.*'),
+                                'text-ink-muted hover:bg-surface hover:text-ink' => !request()->routeIs('filiais.*'),
+                            ])>
+                                Filiais
+                            </a>
+                        </li>
                     </ul>
                 </li>
 
