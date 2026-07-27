@@ -140,6 +140,7 @@ class PropriedadeController extends Controller
     {
         return Pessoa::query()
             ->where('eh_ativo', true)
+            ->where('tipo_cadastro', 'Produtor')
             ->orderBy('nome_completo')
             ->get(['id', 'nome_completo', 'documento']);
     }
