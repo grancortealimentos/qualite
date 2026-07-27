@@ -49,14 +49,6 @@ class PropriedadeRepository
         ->where('cnpj', $cnpj)
         ->when($ignorarId, fn ($q) => $q->whereKeyNot($ignorarId));
 
-        \Log::debug('[REPO] buscarPorCnpj', [
-            'cnpj' => $cnpj,
-            'ignorarId' => $ignorarId ?? 'NULL',
-            'sql' => $query->toSql(),
-            'bindings' => $query->getBindings(),
-            'encontrou' => $query->first()?->id ?? 'nada',
-        ]);
-
         return $query->first();
     }
 

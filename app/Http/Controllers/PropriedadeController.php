@@ -65,7 +65,6 @@ class PropriedadeController extends Controller
     {
         try
         {
-            Log::debug('[CTRL][PROPRIEDADE][UPDATE][REQUEST->ALL()]', $request->all());
             $this->propriedadeService->update(
                 $propriedade,
                 PropriedadeData::paraEdicao($request->validated())

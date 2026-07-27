@@ -30,11 +30,6 @@ class PropriedadeRequest extends FormRequest
 
     public function rules(): array
     {
-        \Log::debug('[REQ] route propriedade', [
-            'raw'   => $this->route('propriedade'),
-            'param' => $this->route()->parameter('propriedade'),
-            'id'    => optional($this->route('propriedade'))->id,
-        ]);
         $param = $this->route('propriedade');
         $propriedadeId = $param instanceof \App\Models\Propriedade ? $param->id : $param;
 
