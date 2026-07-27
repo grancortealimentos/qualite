@@ -17,8 +17,8 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        $middleware->trustProxies('*');
         $middleware->append(GerarCorrelationId::class);
-
         $middleware->alias([
             'password.changed' => EnsurePasswordIsChanged::class,
             'role' => RoleMiddleware::class,

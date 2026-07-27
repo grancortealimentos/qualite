@@ -139,9 +139,15 @@
                                         class="text-danger">*</span></label>
                                 <select name="tipo_cadastro" required
                                     class="w-full bg-canvas rounded-xl text-ink py-2.5 focus:ring-primary/20 @error('tipo_cadastro') border-danger @else border-border focus:border-primary @enderror">
-                                    @foreach (['Funcionario' => 'Funcionário', 'Veterinario' => 'Veterinário', 'Advogado' => 'Advogado'] as $valor => $rotulo)
+                                    @foreach ([
+                                        'Funcionario' => 'Funcionário', 
+                                        'Veterinario' => 'Veterinário', 
+                                        'Advogado' => 'Advogado',
+                                        'Produtor' => 'Produtor'
+                                    ] as $valor => $rotulo)
                                         <option value="{{ $valor }}" @selected(old('tipo_cadastro') === $valor)>
-                                            {{ $rotulo }}</option>
+                                            {{ $rotulo }}
+                                        </option>
                                     @endforeach
                                 </select>
                                 @error('tipo_cadastro')
