@@ -11,12 +11,16 @@ class PropriedadeRepository
 {
     public function paginar(array $filtros = [], int $porPagina = 10): LengthAwarePaginator
     {
+        $status = $filtros['status'] ?? '';
+
         return Propriedade::query()
             ->with('produtor:id,nome_completo')
             ->busca($filtros['busca'] ?? null)
+            ->when($status === '', fn ($query) => $query->where('eh_ativo', true))
+            ->when($status === '0', fn ($query) => $query->where('eh_ativo', false))
             ->when(
-                isset($filtros['eh_ativo']) && $filtros['eh_ativo'] !== '',
-                fn ($query) => $query->where('eh_ativo', filter_var($filtros['eh_ativo'], FILTER_VALIDATE_BOOLEAN))
+                filled($filtros['cadastrado_de'] ?? null),
+                fn ($query) => $query->whereDate('created_at', '>=', $filtros['cadastrado_de'])
             )
             ->when(
                 filled($filtros['produtor_id'] ?? null),

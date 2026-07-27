@@ -70,5 +70,17 @@ return [
                 'filiais.status' => 'Ativar ou inativar filial',
             ],
         ],
+
+        'propriedades' => [
+            'codigo' => '05',
+            'label' => 'Propriedades',
+            'permissoes' => [
+                'propriedades.visualizar' => 'Listar e visualizar propriedades',
+                'propriedades.criar' => 'Cadastrar nova propriedade',
+                'propriedades.editar' => 'Editar propriedade',
+                'propriedades.excluir' => 'Excluir propriedade',
+                'propriedades.status' => 'Ativar ou inativar propriedade',
+            ]
+        ],
     ],
 ];

@@ -76,6 +76,16 @@
                                 Filiais
                             </a>
                         </li>
+
+                        <li>
+                            <a href="{{ route('propriedades.index') }}" @class([
+                                'flex py-2 px-2.5 text-sm rounded-lg',
+                                'bg-primary/15 text-primary-light font-medium' => request()->routeIs('propriedades.*'),
+                                'text-ink-muted hover:bg-surface hover:text-ink' => !request()->routeIs('propriedades.*'),
+                            ])>
+                                Propriedades
+                            </a>
+                        </li>
                     </ul>
                 </li>
 
