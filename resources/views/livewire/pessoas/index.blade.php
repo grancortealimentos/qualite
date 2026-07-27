@@ -55,16 +55,16 @@
             </div>
 
             @can('pessoas.criar')
-            <a href="{{ route('pessoas.create') }}" wire:navigate
-                class="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg bg-primary border border-transparent text-white hover:bg-primary-hover focus:outline-hidden focus:ring-2 focus:ring-primary/40">
-                <svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                    stroke-linejoin="round">
-                    <path d="M5 12h14" />
-                    <path d="M12 5v14" />
-                </svg>
-                {{ __('Novo') }}
-            </a>
+                <a href="{{ route('pessoas.create') }}" wire:navigate
+                    class="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg bg-primary border border-transparent text-white hover:bg-primary-hover focus:outline-hidden focus:ring-2 focus:ring-primary/40">
+                    <svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M5 12h14" />
+                        <path d="M12 5v14" />
+                    </svg>
+                    {{ __('Novo') }}
+                </a>
             @endcan
         </div>
 
@@ -205,16 +205,20 @@
                                         class="text-xs font-semibold uppercase text-primary-light">{{ __('Cód') }}</span>
                                 </th>
                                 <th scope="col" class="px-6 py-3 text-start">
-                                    <span
-                                        class="text-xs font-semibold uppercase text-primary-light">{{ __('Usuário') }}</span>
+                                    <span class="text-xs font-semibold uppercase text-primary-light">
+                                        {{ __('Usuário') }}
+                                    </span>
+                                </th>
+
+                                <th scope="col" class="px-6 py-3 text-start">
+                                    <span class="text-xs font-semibold uppercase text-ink-muted">
+                                        {{ __('Tipo') }}
+                                    </span>
                                 </th>
                                 <th scope="col" class="px-6 py-3 text-start">
-                                    <span
-                                        class="text-xs font-semibold uppercase text-ink-muted">{{ __('Documento') }}</span>
-                                </th>
-                                <th scope="col" class="px-6 py-3 text-start">
-                                    <span
-                                        class="text-xs font-semibold uppercase text-ink-muted">{{ __('Status') }}</span>
+                                    <span class="text-xs font-semibold uppercase text-ink-muted">
+                                        {{ __('Status') }}
+                                    </span>
                                 </th>
                                 <th scope="col" class="px-6 py-3 text-end">
                                     <span
@@ -256,10 +260,11 @@
                                                 </span>
                                             @endif
                                             <div class="min-w-0">
-                                                <span
-                                                    class="block text-sm font-medium text-ink truncate">{{ $pessoa->nome_completo }}</span>
+                                                <span class="block text-sm font-medium text-ink truncate">
+                                                    {{ $pessoa->nome_completo }}
+                                                </span>
                                                 <span class="block text-xs text-ink-muted truncate">
-                                                    {{ $pessoa->email ?: $pessoa->tipo_cadastro }}
+                                                    {{ $pessoa->email ?: chr(95) }}
                                                 </span>
                                             </div>
                                         </div>
@@ -267,12 +272,20 @@
 
                                     <td class="size-px whitespace-nowrap">
                                         <div class="px-6 py-3">
-                                            @if ($pessoa->documento)
-                                                <span class="block text-sm text-ink">{{ $pessoa->documento_formatado }}</span>
-                                                <span class="block text-xs text-ink-muted">{{ $pessoa->tipo_documento }}</span>
-                                            @else
-                                                <span class="text-sm text-ink-muted">&mdash;</span>
-                                            @endif
+                                            @php
+                                                $rotuloTipo = match ($pessoa->tipo_cadastro) {
+                                                    'Funcionario' => 'Funcionário',
+                                                    'Veterinario' => 'Veterinário',
+                                                    'Advogado' => 'Advogado',
+                                                    'Produtor' => 'Produtor',
+                                                    default => $pessoa->tipo_cadastro,
+                                                };
+                                                $ehFuncionario = $pessoa->tipo_cadastro === 'Funcionario';
+                                            @endphp
+                                            <span
+                                                class="inline-flex items-center gap-1.5 py-1 px-2 rounded-full text-xs font-medium {{ $ehFuncionario ? 'bg-accent/15 text-accent-light' : 'bg-border/40 text-ink-muted' }}">
+                                                {{ $rotuloTipo }}
+                                            </span>
                                         </div>
                                     </td>
 
@@ -290,45 +303,45 @@
                                     <td class="size-px whitespace-nowrap">
                                         <div class="px-6 py-3 flex justify-end items-center gap-x-1.5">
                                             @can('pessoas.editar')
-                                            <a href="{{ route('pessoas.edit', $pessoa) }}" wire:navigate
-                                                class="p-2 inline-flex items-center justify-center rounded-lg bg-primary hover:bg-primary-hover text-white"
-                                                title="{{ __('Editar') }}">
-                                                <svg class="shrink-0 size-3.5" xmlns="http://www.w3.org/2000/svg" width="24"
-                                                    height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                                    <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
-                                                </svg>
-                                            </a>
+                                                <a href="{{ route('pessoas.edit', $pessoa) }}" wire:navigate
+                                                    class="p-2 inline-flex items-center justify-center rounded-lg bg-primary hover:bg-primary-hover text-white"
+                                                    title="{{ __('Editar') }}">
+                                                    <svg class="shrink-0 size-3.5" xmlns="http://www.w3.org/2000/svg" width="24"
+                                                        height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                        <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
+                                                    </svg>
+                                                </a>
                                             @endcan
 
-                                            @can('pessoas.status')
-                                            <button type="button" wire:click="alternarStatus({{ $pessoa->id }})"
-                                                wire:loading.attr="disabled"
-                                                class="p-2 inline-flex items-center justify-center rounded-lg bg-warn hover:bg-warn-hover text-canvas disabled:opacity-50"
-                                                title="{{ $pessoa->eh_ativo ? __('Desativar') : __('Ativar') }}">
-                                                <svg class="shrink-0 size-3.5" xmlns="http://www.w3.org/2000/svg" width="24"
-                                                    height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                                    <path d="M12 2v10" />
-                                                    <path d="M18.4 6.6a9 9 0 1 1-12.77.04" />
-                                                </svg>
-                                            </button>
+                                            @can('pessoas.editar')
+                                                @can('update', $pessoa)
+                                                    <a href="{{ route('pessoas.edit', $pessoa) }}" wire:navigate
+                                                        class="p-2 inline-flex items-center justify-center rounded-lg bg-primary hover:bg-primary-hover text-white"
+                                                        title="{{ __('Editar') }}">
+                                                        <svg class="shrink-0 size-3.5" xmlns="http://www.w3.org/2000/svg" width="24"
+                                                            height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                            <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
+                                                        </svg>
+                                                    </a>
+                                                @endcan
                                             @endcan
 
                                             @can('pessoas.excluir')
-                                            <button type="button" wire:click="excluir({{ $pessoa->id }})"
-                                                wire:confirm="{{ __('Tem certeza que deseja excluir esta pessoa?') }}"
-                                                wire:loading.attr="disabled"
-                                                class="p-2 inline-flex items-center justify-center rounded-lg bg-danger hover:bg-danger/80 text-white disabled:opacity-50"
-                                                title="{{ __('Excluir') }}">
-                                                <svg class="shrink-0 size-3.5" xmlns="http://www.w3.org/2000/svg" width="24"
-                                                    height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                                    <path d="M3 6h18" />
-                                                    <path
-                                                        d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
-                                                </svg>
-                                            </button>
+                                                <button type="button" wire:click="excluir({{ $pessoa->id }})"
+                                                    wire:confirm="{{ __('Tem certeza que deseja excluir esta pessoa?') }}"
+                                                    wire:loading.attr="disabled"
+                                                    class="p-2 inline-flex items-center justify-center rounded-lg bg-danger hover:bg-danger/80 text-white disabled:opacity-50"
+                                                    title="{{ __('Excluir') }}">
+                                                    <svg class="shrink-0 size-3.5" xmlns="http://www.w3.org/2000/svg" width="24"
+                                                        height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                        <path d="M3 6h18" />
+                                                        <path
+                                                            d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                                                    </svg>
+                                                </button>
                                             @endcan
                                         </div>
                                     </td>

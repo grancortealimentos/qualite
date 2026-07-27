@@ -142,6 +142,26 @@ class PessoaRequest extends FormRequest
                 if($tipo === 'CNPJ' && !$this->cnpjValido($doc)) {
                     $validator->errors()->add('documento', 'O CNPJ informado é inválido');
                 }
+            }, 
+
+            function ($validator) {
+                if($this->input('tipo_cadastro') !== 'Funcionario') {
+                    return;
+                }
+
+                if($this->user()?->hasRole('admin')) {
+                    return;
+                }
+
+                $pessoa = $this->route('pessoa');
+                if($pessoa?->tipo_cadastro === 'Funcionario') {
+                    return;
+                }
+
+                $validator->errors()->add(
+                    'tipo_cadastro',
+                    'Apenas administradores podem cadastrar o tipo Funcionário.',
+                );
             }
         ];
     }

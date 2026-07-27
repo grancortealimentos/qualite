@@ -183,7 +183,7 @@
 
                 <div class="grid grid-cols-1 md:grid-cols-4 gap-5">
                     <div>
-                        <label class="block text-sm font-medium text-ink-muted mb-1.5">Área Total (ha)</label>
+                        <label class="block text-sm font-medium text-ink-muted mb-1.5">Área Total (hectares)</label>
                         <input type="number" step="0.01" min="0" name="area_total" value="{{ old('area_total') }}"
                             class="w-full bg-canvas rounded-xl text-ink py-2.5 focus:ring-primary/20 @error('area_total') border-danger @else border-border focus:border-primary @enderror">
                         @error('area_total')
@@ -192,7 +192,7 @@
                     </div>
 
                     <div>
-                        <label class="block text-sm font-medium text-ink-muted mb-1.5">Área Consolidada (ha)</label>
+                        <label class="block text-sm font-medium text-ink-muted mb-1.5">Área Consolidada (hectares)</label>
                         <input type="number" step="0.01" min="0" name="area_consolidada"
                             value="{{ old('area_consolidada') }}"
                             class="w-full bg-canvas rounded-xl text-ink py-2.5 focus:ring-primary/20 @error('area_consolidada') border-danger @else border-border focus:border-primary @enderror">
@@ -202,7 +202,7 @@
                     </div>
 
                     <div>
-                        <label class="block text-sm font-medium text-ink-muted mb-1.5">Reserva Legal (ha)</label>
+                        <label class="block text-sm font-medium text-ink-muted mb-1.5">Reserva Legal (hectares)</label>
                         <input type="number" step="0.01" min="0" name="area_reservada_legal"
                             value="{{ old('area_reservada_legal') }}"
                             class="w-full bg-canvas rounded-xl text-ink py-2.5 focus:ring-primary/20 @error('area_reservada_legal') border-danger @else border-border focus:border-primary @enderror">
@@ -212,7 +212,7 @@
                     </div>
 
                     <div>
-                        <label class="block text-sm font-medium text-ink-muted mb-1.5">Área de APP (ha)</label>
+                        <label class="block text-sm font-medium text-ink-muted mb-1.5">Área de APP (hectares)</label>
                         <input type="number" step="0.01" min="0" name="area_app" value="{{ old('area_app') }}"
                             class="w-full bg-canvas rounded-xl text-ink py-2.5 focus:ring-primary/20 @error('area_app') border-danger @else border-border focus:border-primary @enderror">
                         @error('area_app')
@@ -221,8 +221,9 @@
                     </div>
 
                     <div class="md:col-span-4">
-                        <label class="block text-sm font-medium text-ink-muted mb-1.5">Capacidade de Armazenamento
-                            (sacas)</label>
+                        <label class="block text-sm font-medium text-ink-muted mb-1.5">
+                            Capacidade de Armazenamento (unitário)
+                        </label>
                         <input type="number" min="0" name="capacidade_armazenamento"
                             value="{{ old('capacidade_armazenamento') }}"
                             class="w-full md:w-1/4 bg-canvas rounded-xl text-ink py-2.5 focus:ring-primary/20 @error('capacidade_armazenamento') border-danger @else border-border focus:border-primary @enderror">
@@ -252,20 +253,11 @@
                 {{-- Coordenadas: fora do componente de endereço --}}
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mt-5">
                     <div>
-                        <label class="block text-sm font-medium text-ink-muted mb-1.5">Latitude</label>
-                        <input type="text" name="latitude" value="{{ old('latitude') }}"
-                            class="w-full bg-canvas rounded-xl text-ink py-2.5 focus:ring-primary/20 @error('latitude') border-danger @else border-border focus:border-primary @enderror"
-                            placeholder="-23.5505">
-                        @error('latitude')
-                            <p class="text-xs text-danger mt-1">{{ $message }}</p>
-                        @enderror
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-ink-muted mb-1.5">Longitude</label>
-                        <input type="text" name="longitude" value="{{ old('longitude') }}"
-                            class="w-full bg-canvas rounded-xl text-ink py-2.5 focus:ring-primary/20 @error('longitude') border-danger @else border-border focus:border-primary @enderror"
-                            placeholder="-46.6333">
-                        @error('longitude')
+                        <label class="block text-sm font-medium text-ink-muted mb-1.5">Latitude e Longitude</label>
+                        <input type="text" name="latitude_longitude" value="{{ old('latitude_longitude') }}"
+                            class="w-full bg-canvas rounded-xl text-ink py-2.5 focus:ring-primary/20 @error('latitude_longitude') border-danger @else border-border focus:border-primary @enderror"
+                            placeholder="-23.061353, -49.125454">
+                        @error('latitude_longitude')
                             <p class="text-xs text-danger mt-1">{{ $message }}</p>
                         @enderror
                     </div>

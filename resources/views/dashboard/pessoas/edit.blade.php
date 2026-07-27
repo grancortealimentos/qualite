@@ -155,12 +155,32 @@
                             <div class="md:col-span-2">
                                 <label class="block text-sm font-medium text-ink-muted mb-1.5">Tipo Cadastro <span
                                         class="text-danger">*</span></label>
+
+                                @php
+                                    // Só admin escolhe "Funcionário". Mas se a pessoa JÁ é Funcionário,
+                                    // a opção precisa aparecer mesmo para não-admin — senão o select
+                                    // salvaria silenciosamente o 1º item ao editar. O Request barra
+                                    // apenas a TRANSIÇÃO para Funcionário feita por não-admin.
+                                    $ehAdmin = auth()->user()?->hasRole('Admin') ?? false;
+                                    $jaEhFuncionario = ($pessoa->tipo_cadastro === 'Funcionario');
+
+                                    $tiposCadastro = [
+                                        'Veterinario' => 'Veterinário',
+                                        'Advogado'    => 'Advogado',
+                                    ];
+
+                                    if ($ehAdmin || $jaEhFuncionario) {
+                                        $tiposCadastro = ['Funcionario' => 'Funcionário'] + $tiposCadastro;
+                                    }
+                                @endphp
+
                                 <select name="tipo_cadastro" required
                                     class="w-full bg-canvas rounded-xl text-ink py-2.5 focus:ring-primary/20 @error('tipo_cadastro') border-danger @else border-border focus:border-primary @enderror">
-                                    @foreach (['Funcionario' => 'Funcionário', 'Veterinario' => 'Veterinário', 'Advogado' => 'Advogado'] as $valor => $rotulo)
+                                    @foreach ($tiposCadastro as $valor => $rotulo)
                                         <option value="{{ $valor }}"
                                             @selected(old('tipo_cadastro', $pessoa->tipo_cadastro) === $valor)>
-                                            {{ $rotulo }}</option>
+                                            {{ $rotulo }}
+                                        </option>
                                     @endforeach
                                 </select>
                                 @error('tipo_cadastro')

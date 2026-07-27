@@ -39,7 +39,7 @@ class PessoaData
             $data['pais'] ?? 'Brasil',
 
             $data['url_foto_perfil'] ?? null,
-            $data['tipo_cadastro'] ?? null,
+            $data['tipo_documento'] ?? null,
             $data['documento'] ?? null,
             $data['doc_profissional'] ?? null,
             $data['telefone'] ?? null,

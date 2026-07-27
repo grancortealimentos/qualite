@@ -82,11 +82,13 @@ class Index extends Component
 
     public function alternarStatus(int $pessoaId, PessoaService $pessoaService): void
     {
-        if(!auth()->user()->can('pessoas.status')) {
+        $pessoa = Pessoa::findOrFail($pessoaId);
+
+        if(!auth()->user()->can('pessoas.status') || !auth()->user()->can('alterarStatus', $pessoa)) {
             $this->dispatch('toast', 'error', 'Você não tem permissão para alterar o status.');
+            return;
         }
 
-        $pessoa = Pessoa::findOrFail($pessoaId);
         $pessoa = $pessoaService->alternarStatus($pessoa);
 
         // Argumentos NOMEADOS: viram as chaves de $event.detail no Alpine.
@@ -100,11 +102,12 @@ class Index extends Component
 
     public function excluir(int $pessoaId, PessoaService $pessoaService): void
     {
-        if(!auth()->user()->can('pessoas.excluir')) {
+        $pessoa = Pessoa::findOrFail($pessoaId);
+        if(!auth()->user()->can('pessoas.excluir') || !auth()->user()->can('delete', $pessoa)) {
             $this->dispatch('toast', 'error', 'Você não tem permissão para excluir o status.');
+            return;
         }
 
-        $pessoa = Pessoa::findOrFail($pessoaId);
         $pessoaService->delete($pessoa);
 
         $this->dispatch('toast', tipo: 'success', mensagem: 'Pessoa excluída com sucesso.');

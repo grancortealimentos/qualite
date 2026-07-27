@@ -135,16 +135,28 @@
 
                         <div class="grid grid-cols-1 md:grid-cols-6 gap-5">
                             <div class="md:col-span-2">
-                                <label class="block text-sm font-medium text-ink-muted mb-1.5">Tipo Cadastro <span
-                                        class="text-danger">*</span></label>
+                                <label class="block text-sm font-medium text-ink-muted mb-1.5">
+                                    Tipo Cadastro 
+                                    <span class="text-danger">*</span>
+                                </label>
+                                    @php
+                                    // Só admin pode escolher "Funcionário" no cadastro.
+                                    $ehAdmin = auth()->user()?->hasRole('Admin') ?? false;
+
+                                    $tiposCadastro = [
+                                        'Veterinario' => 'Veterinário',
+                                        'Advogado'    => 'Advogado',
+                                        'Produtor'    => 'Produtor',
+                                    ];
+
+                                    if ($ehAdmin) {
+                                        $tiposCadastro = ['Funcionario' => 'Funcionário'] + $tiposCadastro;
+                                    }
+                                @endphp
+
                                 <select name="tipo_cadastro" required
                                     class="w-full bg-canvas rounded-xl text-ink py-2.5 focus:ring-primary/20 @error('tipo_cadastro') border-danger @else border-border focus:border-primary @enderror">
-                                    @foreach ([
-                                        'Funcionario' => 'Funcionário', 
-                                        'Veterinario' => 'Veterinário', 
-                                        'Advogado' => 'Advogado',
-                                        'Produtor' => 'Produtor'
-                                    ] as $valor => $rotulo)
+                                    @foreach ($tiposCadastro as $valor => $rotulo)
                                         <option value="{{ $valor }}" @selected(old('tipo_cadastro') === $valor)>
                                             {{ $rotulo }}
                                         </option>
