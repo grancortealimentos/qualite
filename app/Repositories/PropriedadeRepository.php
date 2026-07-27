@@ -45,10 +45,19 @@ class PropriedadeRepository
 
     public function buscarPorCnpj(string $cnpj, ?int $ignorarId = null): ?Propriedade
     {
-        return Propriedade::query()
-            ->where('cnpj', $cnpj)
-            ->when($ignorarId, fn ($query) => $query->whereKeyNot($ignorarId))
-            ->first();
+        $query = Propriedade::query()
+        ->where('cnpj', $cnpj)
+        ->when($ignorarId, fn ($q) => $q->whereKeyNot($ignorarId));
+
+        \Log::debug('[REPO] buscarPorCnpj', [
+            'cnpj' => $cnpj,
+            'ignorarId' => $ignorarId ?? 'NULL',
+            'sql' => $query->toSql(),
+            'bindings' => $query->getBindings(),
+            'encontrou' => $query->first()?->id ?? 'nada',
+        ]);
+
+        return $query->first();
     }
 
     public function buscarPorProdutor(int $produtorId): Collection

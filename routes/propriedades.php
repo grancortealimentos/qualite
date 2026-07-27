@@ -15,20 +15,20 @@ Route::prefix('propriedades')->name('propriedades.')->group( function () {
     Route::get('/novo', [PropriedadeController::class, 'create'])
         ->middleware('can:propriedades.criar')
         ->name('create');
-
-    Route::post('/', [PropriedadeController::class, 'store'])
-        ->middleware('can:propriedades.criar')
-        ->name('store');
-
-    Route::get('/{propriedade}/editar', [PropriedadeController::class, 'update'])
+        
+    Route::get('/{propriedade}/editar', [PropriedadeController::class, 'edit'])
         ->middleware('can:propriedades.editar')
         ->name('edit');
 
+    Route::post('/', [PropriedadeController::class, 'store'])
+            ->middleware('can:propriedades.criar')
+            ->name('store');
+        
     Route::put('/{propriedade}', [PropriedadeController::class, 'update'])
         ->middleware('can:propriedades.editar')
         ->name('update');
 
-    Route::patch('/{propriedades}/status', [PropriedadeController::class, 'alterarStatus'])
+    Route::patch('/{propriedade}/status', [PropriedadeController::class, 'alterarStatus'])
         ->middleware('can:propriedades.alterarStatus')
         ->name('alterar-status');
 

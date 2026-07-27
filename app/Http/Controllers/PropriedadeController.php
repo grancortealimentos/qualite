@@ -8,6 +8,7 @@ use App\Models\Pessoa;
 use App\Models\Propriedade;
 use App\Services\PropriedadeService;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 use Throwable;
@@ -60,17 +61,18 @@ class PropriedadeController extends Controller
         }
     }
 
-    public function update(PropriedadeRequest $request, Propriedade $propridade): RedirectResponse
+    public function update(PropriedadeRequest $request, Propriedade $propriedade): RedirectResponse
     {
         try
         {
+            Log::debug('[CTRL][PROPRIEDADE][UPDATE][REQUEST->ALL()]', $request->all());
             $this->propriedadeService->update(
-                $propridade,
+                $propriedade,
                 PropriedadeData::paraEdicao($request->validated())
             );
 
             return redirect()
-                ->route('propriedades.edit', $propridade)
+                ->route('propriedades.edit', $propriedade)
                 ->with('status', 'Propriedade atualizada com sucesso.');
         }
         catch(ValidationException $e)

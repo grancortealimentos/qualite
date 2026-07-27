@@ -34,6 +34,11 @@ class PropriedadeService
     */
     public function update(Propriedade $propriedade, PropriedadeData $data): Propriedade
     {
+        \Log::debug('[SVC] update', [
+            'propriedade_id' => $propriedade->id ?? 'NULL',
+            'propriedade_exists' => $propriedade->exists,
+            'cnpj_data' => $data->cnpj,
+        ]);
         $this->garantirCnpjUnico($data->cnpj, $propriedade->id);
         $this->garantirAreasCoerentes($data);
 
