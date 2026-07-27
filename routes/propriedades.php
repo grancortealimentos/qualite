@@ -22,7 +22,7 @@ Route::prefix('propriedades')->name('propriedades.')->group( function () {
 
     Route::get('/{propriedade}/editar', [PropriedadeController::class, 'update'])
         ->middleware('can:propriedades.editar')
-        ->name('update');
+        ->name('edit');
 
     Route::put('/{propriedade}', [PropriedadeController::class, 'update'])
         ->middleware('can:propriedades.editar')

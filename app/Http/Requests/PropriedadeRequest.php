@@ -2,11 +2,14 @@
 
 namespace App\Http\Requests;
 
+use App\Http\Requests\Concerns\ValidaDocumentos;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
 class PropriedadeRequest extends FormRequest
 {
+    use ValidaDocumentos;
+
     public function authorize(): bool
     {
         return true;
@@ -27,7 +30,7 @@ class PropriedadeRequest extends FormRequest
 
     public function rules(): array
     {
-        $propriedadeId = $this->route('propriedade')?->id;
+        $propriedadeId = $this->route('propriedades')?->id;
 
         return [
             'produtor_id' => ['required', 'integer', 'exists:pessoas,id'],
@@ -38,7 +41,6 @@ class PropriedadeRequest extends FormRequest
                 'required',
                 'string',
                 'size:14',
-                'cnpj',
                 Rule::unique('propriedades', 'cnpj')->ignore($propriedadeId)->whereNull('deleted_at'),
             ],
             'ie' => ['nullable', 'string', 'max:20'],
@@ -59,6 +61,18 @@ class PropriedadeRequest extends FormRequest
             'complemento' => ['nullable', 'string', 'max:255'],
             'latitude' => ['nullable', 'string', 'max:255'],
             'longitude' => ['nullable', 'string', 'max:255'],
+        ];
+    }
+
+    public function after(): array
+    {
+        return [
+            function ($validator) {
+                $cnpj = $this->input('cnpj');
+                if ($cnpj && !$this->cnpjValido($cnpj)) {
+                    $validator->errors()->add('cnpj', 'O CNPJ informado é inválido.');
+                }
+            },
         ];
     }
 

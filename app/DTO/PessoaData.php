@@ -32,7 +32,7 @@ class PessoaData
     public static function fromArray(array $data): self
     {
         return new self(
-            $data['tipo_documento'],
+            $data['tipo_cadastro'],
             $data['nome_completo'],
 
             $data['eh_ativo'] ?? true,

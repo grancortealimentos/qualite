@@ -264,7 +264,7 @@
                                                     {{ $pessoa->nome_completo }}
                                                 </span>
                                                 <span class="block text-xs text-ink-muted truncate">
-                                                    {{ $pessoa->email ?: chr(95) }}
+                                                    {{ $pessoa->documento_formatado }}
                                                 </span>
                                             </div>
                                         </div>
@@ -273,18 +273,22 @@
                                     <td class="size-px whitespace-nowrap">
                                         <div class="px-6 py-3">
                                             @php
-                                                $rotuloTipo = match ($pessoa->tipo_cadastro) {
-                                                    'Funcionario' => 'Funcionário',
-                                                    'Veterinario' => 'Veterinário',
-                                                    'Advogado' => 'Advogado',
-                                                    'Produtor' => 'Produtor',
-                                                    default => $pessoa->tipo_cadastro,
-                                                };
-                                                $ehFuncionario = $pessoa->tipo_cadastro === 'Funcionario';
+                                                $tipos = [
+                                                    'Funcionario' => ['rotulo' => 'Funcionário', 'cor' => 'bg-accent/15 text-accent-light'],
+                                                    'Veterinario' => ['rotulo' => 'Veterinário', 'cor' => 'bg-emerald-500/15 text-emerald-400'],
+                                                    'Advogado' => ['rotulo' => 'Advogado', 'cor' => 'bg-primary/15 text-primary-light'],
+                                                    'Produtor' => ['rotulo' => 'Produtor', 'cor' => 'bg-warn/15 text-warn'],
+                                                ];
+
+                                                // default cobre valores fora da lista (ex.: "administrador" que aparece na tela)
+                                                $tipo = $tipos[$pessoa->tipo_cadastro] ?? [
+                                                    'rotulo' => $pessoa->tipo_cadastro,
+                                                    'cor' => 'bg-border/40 text-ink-muted',
+                                                ];
                                             @endphp
                                             <span
-                                                class="inline-flex items-center gap-1.5 py-1 px-2 rounded-full text-xs font-medium {{ $ehFuncionario ? 'bg-accent/15 text-accent-light' : 'bg-border/40 text-ink-muted' }}">
-                                                {{ $rotuloTipo }}
+                                                class="inline-flex items-center gap-1.5 py-1 px-2 rounded-full text-xs font-medium {{ $tipo['cor'] }}">
+                                                {{ $tipo['rotulo'] }}
                                             </span>
                                         </div>
                                     </td>
