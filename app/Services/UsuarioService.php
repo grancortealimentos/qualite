@@ -142,14 +142,7 @@ class UsuarioService
                 ->flatMap(fn ($grupo) => array_keys($grupo['permissoes']))
                 ->all();
 
-            \Log::debug('[SERVICE][USUARIO][SINCRONIZAR][NOMES_VALIDOS]', [
-                $nomesValidos
-            ]);
-
             $viaPapel = $user->getPermissionsViaRoles()->pluck('name')->all();
-            \Log::debug('[SERVICE][USUARIO][SINCRONIZAR][VIA_PAPEL]', [
-                $viaPapel
-            ]);
 
             $desejadas = collect($permissoesDesejadas)
                 ->intersect($nomesValidos)
@@ -158,18 +151,12 @@ class UsuarioService
                 ->sort()
                 ->values()
                 ->all();
-            \Log::debug('[SERVICE][USUARIO][SINCRONIZAR][DESEJADAS]', [
-                $desejadas
-            ]);
             
             $antes = $user->getDirectPermissions()
                 ->pluck('name')
                 ->sort()
                 ->values()
                 ->all();
-            \Log::debug('[SERVICE][USUARIO][SINCRONIZAR][ANTES]', [
-                $antes
-            ]);
 
             if($antes === $desejadas) {
                 return $user;
@@ -177,14 +164,8 @@ class UsuarioService
 
             $user->syncPermissions($desejadas);
             $concedidas = array_values(array_diff($desejadas, $antes));
-            \Log::debug('[SERVICE][USUARIO][SINCRONIZAR][CONCEDIDAS]', [
-                $concedidas
-            ]);
 
             $revogadas = array_values(array_diff($antes, $desejadas));
-            \Log::debug('[SERVICE][USUARIO][SINCRONIZAR][REVOGADAS]', [
-                $revogadas
-            ]);
 
             $partes = [];
             if(!empty($concedidas)) {
