@@ -158,3 +158,59 @@ window.gridPermissoes = ({ todas, iniciais }) => ({
         }
     },
 });
+
+/**
+ * Estado do grid de permissões DIRETAS de um usuário.
+ *
+ * Mesmo lugar e mesmo motivo do gridPermissoes: fica no bundle, não em
+ * @push('scripts'), senão o x-data quebra em telas alcançadas por wire:navigate.
+ *
+ * Diferença central para o gridPermissoes dos Papéis:
+ * `editaveis` é o universo que PODE ser marcado = catálogo MENOS as permissões
+ * que já vêm do papel. As travadas nem entram aqui: são renderizadas como
+ * checkbox disabled no blade, sem estado no Alpine. `selecionadas` é estado
+ * Alpine puro, inicializado de `iniciais` (as diretas atuais). O Salvar lê esse
+ * array via $wire.salvar(selecionadas) — sem entangle.
+ */
+window.gridPermissoesUsuario = ({ editaveis, iniciais }) => ({
+    editaveis: editaveis,
+    selecionadas: iniciais ?? [],
+
+    /** Marcado só quando TODO o universo editável está selecionado. */
+    get tudoMarcado() {
+        return this.editaveis.length > 0
+            && this.editaveis.every(n => this.selecionadas.includes(n));
+    },
+    set tudoMarcado(valor) {
+        // selecionadas só carrega editáveis; nunca encosta nas travadas.
+        this.selecionadas = valor ? [...this.editaveis] : [];
+    },
+
+    /** Algo marcado, mas não tudo — alimenta o indeterminate do "selecionar tudo". */
+    get tudoParcial() {
+        return this.selecionadas.length > 0 && !this.tudoMarcado;
+    },
+
+    /** `nomes` aqui é só a fatia EDITÁVEL do módulo (as travadas ficam de fora). */
+    moduloMarcado(nomes) {
+        return nomes.length > 0 && nomes.every(n => this.selecionadas.includes(n));
+    },
+
+    moduloParcial(nomes) {
+        return nomes.some(n => this.selecionadas.includes(n))
+            && !this.moduloMarcado(nomes);
+    },
+
+    /**
+     * Marca/desmarca a fatia editável do módulo. O filter evita duplicar nomes
+     * já presentes — duplicata faria a contagem mentir.
+     */
+    alternarModulo(nomes, marcar) {
+        if (marcar) {
+            const novos = nomes.filter(n => !this.selecionadas.includes(n));
+            this.selecionadas = [...this.selecionadas, ...novos];
+        } else {
+            this.selecionadas = this.selecionadas.filter(n => !nomes.includes(n));
+        }
+    },
+});

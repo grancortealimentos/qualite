@@ -134,4 +134,77 @@ class UsuarioService
                 : "Papel do usuário \"{$user->name}\" alterado de \"{$papelAnterior->name}\" para \"{$papelNovo?->name}\".",
         );
     }
+
+    public function sincronizarPermissoesDiretas(User $user, array $permissoesDesejadas): User
+    {
+        return DB::transaction(function () use ($user, $permissoesDesejadas) {
+            $nomesValidos = collect(config('permissoes.grupos'))
+                ->flatMap(fn ($grupo) => array_keys($grupo['permissoes']))
+                ->all();
+
+            \Log::debug('[SERVICE][USUARIO][SINCRONIZAR][NOMES_VALIDOS]', [
+                $nomesValidos
+            ]);
+
+            $viaPapel = $user->getPermissionsViaRoles()->pluck('name')->all();
+            \Log::debug('[SERVICE][USUARIO][SINCRONIZAR][VIA_PAPEL]', [
+                $viaPapel
+            ]);
+
+            $desejadas = collect($permissoesDesejadas)
+                ->intersect($nomesValidos)
+                ->diff($viaPapel)
+                ->unique()
+                ->sort()
+                ->values()
+                ->all();
+            \Log::debug('[SERVICE][USUARIO][SINCRONIZAR][DESEJADAS]', [
+                $desejadas
+            ]);
+            
+            $antes = $user->getDirectPermissions()
+                ->pluck('name')
+                ->sort()
+                ->values()
+                ->all();
+            \Log::debug('[SERVICE][USUARIO][SINCRONIZAR][ANTES]', [
+                $antes
+            ]);
+
+            if($antes === $desejadas) {
+                return $user;
+            }
+
+            $user->syncPermissions($desejadas);
+            $concedidas = array_values(array_diff($desejadas, $antes));
+            \Log::debug('[SERVICE][USUARIO][SINCRONIZAR][CONCEDIDAS]', [
+                $concedidas
+            ]);
+
+            $revogadas = array_values(array_diff($antes, $desejadas));
+            \Log::debug('[SERVICE][USUARIO][SINCRONIZAR][REVOGADAS]', [
+                $revogadas
+            ]);
+
+            $partes = [];
+            if(!empty($concedidas)) {
+                $partes[] = 'Concedidas: ' . implode(', ', $concedidas);
+            }
+
+            if(!empty($revogadas)) {
+                $partes[] = 'Revogadas: ' . implode(', ', $revogadas);
+            }
+
+            $this->auditoriaService->registrar(
+                acao: 'usuarios.permissoes_diretas.sincronizadas',
+                entidadeTipo: 'User',
+                entidadeId: (string) $user->id,
+                antes: ['permissoes_diretas' => $antes],
+                depois: ['permissoes_diretas' => $desejadas],
+                descricao: "Permissões diretas do usuário \"{$user->name}\" atualizadas. " . implode(' · ', $partes),
+            );
+
+            return $user;
+        });
+    }
 }
