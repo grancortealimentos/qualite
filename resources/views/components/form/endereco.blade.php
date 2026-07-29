@@ -16,8 +16,9 @@
         ->only(['cep', 'logradouro', 'bairro', 'cidade', 'estado'])
         ->all();
 
-    // numero e pais não entram no Alpine: renderizam direto no value do input
+    // numero, complemento e pais não entram no Alpine: renderizam direto no value do input
     $numero = $endereco['numero'] ?? old('numero');
+    $complemento = $endereco['complemento'] ?? old('complemento');
     $pais = $endereco['pais'] ?? old('pais', 'Brasil');
 @endphp
 
@@ -66,6 +67,7 @@
             <input type="text" name="numero" value="{{ $numero }}"
                 class="w-full bg-canvas border-border rounded-xl text-ink py-2.5 focus:border-primary focus:ring-primary/20">
         </div>
+        
 
         <div class="md:col-span-2">
             <label class="block text-sm font-medium text-ink-muted mb-1.5">Bairro</label>
@@ -85,6 +87,11 @@
         <div class="md:col-span-2">
             <label class="block text-sm font-medium text-ink-muted mb-1.5">País</label>
             <input type="text" name="pais" value="{{ $pais }}"
+                class="w-full bg-canvas border-border rounded-xl text-ink py-2.5 focus:border-primary focus:ring-primary/20">
+        </div>
+        <div class="md:col-span-6">
+            <label class="block text-sm font-medium text-ink-muted mb-1.5">Complemento</label>
+            <input type="text" name="complemento" value="{{ $complemento }}" placeholder="Apto, bloco, referência..."
                 class="w-full bg-canvas border-border rounded-xl text-ink py-2.5 focus:border-primary focus:ring-primary/20">
         </div>
     </div>

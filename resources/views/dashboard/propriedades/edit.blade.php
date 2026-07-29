@@ -278,6 +278,7 @@
                     'cidade' => old('cidade', $propriedade->cidade),
                     'estado' => old('estado', $propriedade->estado),
                     'pais' => old('pais', $propriedade->pais),
+                    'complemento' => old('complemento', $propriedade->complemento),
                 ]" />
 
                 {{-- Coordenadas: fora do componente de endereço --}}

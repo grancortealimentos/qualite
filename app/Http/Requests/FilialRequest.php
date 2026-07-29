@@ -56,6 +56,7 @@ class FilialRequest extends FormRequest
             'cidade'     => ['nullable', 'string', 'max:255'],
             'estado'     => ['nullable', 'string', 'max:255'],
             'pais'       => ['nullable', 'string', 'max:255'],
+            'complemento' => ['nullable', 'string', 'max:255'],
             'geolocalizacao' => ['nullable', 'string', 'max:255', $this->regraGeolocalizacaoValida()]
         ];
     }

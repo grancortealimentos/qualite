@@ -197,6 +197,7 @@
                     'cidade' => old('cidade', $filial->cidade),
                     'estado' => old('estado', $filial->estado),
                     'pais' => old('pais', $filial->pais),
+                    'complemento' => old('complemento', $filial->complemento),
                 ]" />
 
                 <div class="mt-6">

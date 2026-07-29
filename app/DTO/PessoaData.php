@@ -26,6 +26,7 @@ class PessoaData
         public readonly ?string $bairro = null,
         public readonly ?string $cidade = null,
         public readonly ?string $estado = null,
+        public readonly ?string $complemento = null,
         
     ) {}
 
@@ -50,6 +51,7 @@ class PessoaData
             $data['bairro'] ?? null,
             $data['cidade'] ?? null,
             $data['estado'] ?? null,
+            $data['complemento'] ?? null,
         );
     }
 
@@ -72,6 +74,7 @@ class PessoaData
             $this->bairro,
             $this->cidade,
             $this->estado,
+            $this->complemento,
         );
     }
 
@@ -94,6 +97,7 @@ class PessoaData
             'cidade' => $this->cidade,
             'estado' => $this->estado,
             'pais' => $this->pais, 
+            'complemento' => $this->complemento
         ];
     }
 

@@ -31,6 +31,7 @@ class Pessoa extends Model
         'cidade',
         'estado',
         'pais', //fixo Brasil
+        'complemento',
     ];
 
     protected $casts = [

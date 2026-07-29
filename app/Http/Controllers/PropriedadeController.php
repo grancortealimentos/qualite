@@ -43,7 +43,7 @@ class PropriedadeController extends Controller
             );
 
             return redirect()
-                ->route('propriedades.edit', $propridade)
+                ->route('propriedades.index', $propridade)
                 ->with('status', 'Propriedade cadastrado com sucesso');
         }
         catch(ValidationException $e)
@@ -71,7 +71,7 @@ class PropriedadeController extends Controller
             );
 
             return redirect()
-                ->route('propriedades.edit', $propriedade)
+                ->route('propriedades.index', $propriedade)
                 ->with('status', 'Propriedade atualizada com sucesso.');
         }
         catch(ValidationException $e)

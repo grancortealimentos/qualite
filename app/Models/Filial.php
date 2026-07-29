@@ -27,6 +27,7 @@ class Filial extends Model
         'cidade',
         'estado',
         'pais',
+        'complemento',
         'geolocalizacao',
     ];
 

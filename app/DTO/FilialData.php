@@ -18,6 +18,7 @@ final class FilialData
         public readonly ?string $cidade = null,
         public readonly ?string $estado = null,
         public readonly ?string $pais = null,
+        public readonly ?string $complemento = null,
         public readonly ?string $geolocalizacao = null,
     ) {}
 
@@ -56,6 +57,7 @@ final class FilialData
             'cidade' => $this->cidade,
             'estado' => $this->estado,
             'pais' => $this->pais,
+            'complemento' => $this->complemento,
             'geolocalizacao' => $this->geolocalizacao,
         ];
     }
@@ -79,6 +81,7 @@ final class FilialData
             cidade: $data['cidade'] ?? null,
             estado: $data['estado'] ?? null,
             pais: $data['pais'] ?? null,
+            complemento: $data['complemento'] ?? null,
             geolocalizacao: $data['geolocalizacao'] ?? null,
         );
     }

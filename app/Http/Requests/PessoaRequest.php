@@ -78,6 +78,7 @@ class PessoaRequest extends FormRequest
             'cidade' => ['nullable', 'string'],
             'estado' => ['nullable', 'string'],
             'pais' => ['nullable', 'string'],
+            'complemento' => ['nullable', 'string'],
 
             // --- Criação opcional de usuário ---
             // 'boolean' é OBRIGATÓRIO aqui: é ele que faz o exclude_unless

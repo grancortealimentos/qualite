@@ -280,6 +280,7 @@
                     'cidade' => old('cidade', $pessoa->cidade),
                     'estado' => old('estado', $pessoa->estado),
                     'pais' => old('pais', $pessoa->pais),
+                    'complemento' => old('complemento', $pessoa->complemento),
                 ]" />
             </div>
 
