@@ -18,8 +18,7 @@ final class FilialData
         public readonly ?string $cidade = null,
         public readonly ?string $estado = null,
         public readonly ?string $pais = null,
-        public readonly ?string $latitude = null,
-        public readonly ?string $longitude = null,
+        public readonly ?string $geolocalizacao = null,
     ) {}
 
     /**
@@ -57,8 +56,7 @@ final class FilialData
             'cidade' => $this->cidade,
             'estado' => $this->estado,
             'pais' => $this->pais,
-            'latitude' => $this->latitude,
-            'longitude' => $this->longitude,
+            'geolocalizacao' => $this->geolocalizacao,
         ];
     }
 
@@ -68,21 +66,20 @@ final class FilialData
     private static function mapear(array $data): self
     {
         return new self(
-            $data['codigo'],
-            $data['razao_social'],
-            $data['eh_ativo'] ?? true,
-            $data['nome_fantasia'] ?? null,
-            $data['cnpj'] ?? null,
-            $data['ie'] ?? null,
-            $data['cep'] ?? null,
-            $data['logradouro'] ?? null,
-            $data['numero'] ?? null,
-            $data['bairro'] ?? null,
-            $data['cidade'] ?? null,
-            $data['estado'] ?? null,
-            $data['pais'] ?? null,
-            $data['latitude'] ?? null,
-            $data['longitude'] ?? null,
+            codigo: $data['codigo'],
+            razaoSocial: $data['razao_social'],
+            ehAtivo: $data['eh_ativo'] ?? true,
+            nomeFantasia: $data['nome_fantasia'] ?? null,
+            cnpj: $data['cnpj'] ?? null,
+            ie: $data['ie'] ?? null,
+            cep: $data['cep'] ?? null,
+            logradouro: $data['logradouro'] ?? null,
+            numero: $data['numero'] ?? null,
+            bairro: $data['bairro'] ?? null,
+            cidade: $data['cidade'] ?? null,
+            estado: $data['estado'] ?? null,
+            pais: $data['pais'] ?? null,
+            geolocalizacao: $data['geolocalizacao'] ?? null,
         );
     }
 }

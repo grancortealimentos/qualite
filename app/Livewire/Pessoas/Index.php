@@ -34,8 +34,19 @@ class Index extends Component
     #[Url(as: 'created_from', except: '')]
     public string $cadastradoDe = '';
 
+    /**
+     * Tipo de cadastro (select único): '' => todos os tipos;
+     * caso contrário, um dos valores de tipo_cadastro (Funcionario, Veterinario, Advogado, Produtor).
+     */
+    #[Url(as: 'tipo', except: '')]
+    public string $filtroTipo = '';
+
     public bool $filtrosAbertos = false;
 
+    /**
+     * Ao montar, o card de filtros avançados já abre expandido
+     * se algum filtro avançado estiver ativo (ex.: veio de um link com querystring).
+     */
     public function mount(): void
     {
         $this->filtrosAbertos = $this->temFiltroAvancado();
@@ -45,54 +56,84 @@ class Index extends Component
     // O nome do hook precisa ser updated + NomeExatoDaPropriedade.
     // Um typo aqui não gera erro: o método simplesmente nunca é chamado.
 
+    /**
+     * Ao digitar na busca, volta para a primeira página.
+     */
     public function updatedBusca(): void
     {
         $this->resetPage();
     }
 
+    /**
+     * Ao trocar o filtro de status, volta para a primeira página.
+     */
     public function updatedFiltroAtivo(): void
     {
         $this->resetPage();
     }
 
+    /**
+     * Ao trocar a data de cadastro, volta para a primeira página.
+     */
     public function updatedCadastradoDe(): void
+    {
+        $this->resetPage();
+    }
+
+    /**
+     * Ao trocar o tipo de cadastro, volta para a primeira página.
+     */
+    public function updatedFiltroTipo(): void
     {
         $this->resetPage();
     }
 
     // ---------- Helpers de estado ----------
 
+    /**
+     * Indica se algum filtro do card "avançado" está ativo
+     * (status, data de cadastro ou tipo de cadastro).
+     */
     public function temFiltroAvancado(): bool
     {
-        return $this->filtroAtivo !== '' || $this->cadastradoDe !== '';
+        return $this->filtroAtivo !== '' || $this->cadastradoDe !== '' || $this->filtroTipo !== '';
     }
 
+    /**
+     * Indica se existe QUALQUER filtro ativo, incluindo a busca textual.
+     * Usado para exibir os chips e o botão "Limpar filtros".
+     */
     public function temQualquerFiltro(): bool
     {
         return $this->temFiltroAvancado() || $this->busca !== '';
     }
 
+    /**
+     * Reseta todos os filtros para o estado padrão e volta para a primeira página.
+     */
     public function limparFiltros(): void
     {
-        $this->reset(['busca', 'filtroAtivo', 'cadastradoDe']);
+        $this->reset(['busca', 'filtroAtivo', 'cadastradoDe', 'filtroTipo']);
         $this->resetPage();
     }
 
     // ---------- Ações ----------
 
+    /**
+     * Ativa/desativa uma pessoa, checando permissão e policy antes de delegar ao service.
+     */
     public function alternarStatus(int $pessoaId, PessoaService $pessoaService): void
     {
         $pessoa = Pessoa::findOrFail($pessoaId);
 
-        if(!auth()->user()->can('pessoas.status') || !auth()->user()->can('alterarStatus', $pessoa)) {
-            $this->dispatch('toast', 'error', 'Você não tem permissão para alterar o status.');
+        if (!auth()->user()->can('pessoas.status') || !auth()->user()->can('alterarStatus', $pessoa)) {
+            // Argumentos NOMEADOS: viram as chaves de $event.detail no Alpine.
+            $this->dispatch('toast', tipo: 'error', mensagem: 'Você não tem permissão para alterar o status.');
             return;
         }
 
         $pessoa = $pessoaService->alternarStatus($pessoa);
 
-        // Argumentos NOMEADOS: viram as chaves de $event.detail no Alpine.
-        // Posicionais gerariam detail = [0 => 'success', 1 => '...'].
         $this->dispatch(
             'toast',
             tipo: 'success',
@@ -100,11 +141,15 @@ class Index extends Component
         );
     }
 
+    /**
+     * Exclui (soft delete) uma pessoa, checando permissão e policy antes de delegar ao service.
+     */
     public function excluir(int $pessoaId, PessoaService $pessoaService): void
     {
         $pessoa = Pessoa::findOrFail($pessoaId);
-        if(!auth()->user()->can('pessoas.excluir') || !auth()->user()->can('delete', $pessoa)) {
-            $this->dispatch('toast', 'error', 'Você não tem permissão para excluir o status.');
+
+        if (!auth()->user()->can('pessoas.excluir') || !auth()->user()->can('delete', $pessoa)) {
+            $this->dispatch('toast', tipo: 'error', mensagem: 'Você não tem permissão para excluir a pessoa.');
             return;
         }
 
@@ -121,9 +166,10 @@ class Index extends Component
     public function render(PessoaService $pessoaService)
     {
         $pessoas = $pessoaService->listar([
-            'search'       => $this->busca,
-            'ativo'        => $this->filtroAtivo,
-            'created_from' => $this->cadastradoDe,
+            'search'        => $this->busca,
+            'ativo'         => $this->filtroAtivo,
+            'created_from'  => $this->cadastradoDe,
+            'tipo_cadastro' => $this->filtroTipo,
         ]);
 
         return view('livewire.pessoas.index', compact('pessoas'));

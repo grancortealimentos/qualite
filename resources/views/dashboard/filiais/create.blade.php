@@ -161,6 +161,17 @@
                 <p class="text-xs text-ink-muted mb-6 italic">Digite o CEP para preencher o endereço automaticamente.</p>
 
                 <x-form.endereco :endereco="old()" />
+
+                <div class="mt-6">
+                    <label class="block text-sm font-medium text-ink-muted mb-1.5">Geolocalização</label>
+                    <input type="text" name="geolocalizacao" value="{{ old('geolocalizacao') }}"
+                        placeholder="-23.5505,-46.6333"
+                        class="w-full bg-canvas rounded-xl text-ink py-2.5 focus:ring-primary/20 transition-all @error('geolocalizacao') border-danger @else border-border focus:border-primary @enderror">
+                    <p class="text-xs text-ink-muted mt-1">Formato: latitude,longitude</p>
+                    @error('geolocalizacao')
+                        <p class="text-xs text-danger mt-1">{{ $message }}</p>
+                    @enderror
+                </div>
             </div>
 
             {{-- FOOTER DE AÇÕES --}}

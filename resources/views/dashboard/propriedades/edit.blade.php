@@ -283,20 +283,13 @@
                 {{-- Coordenadas: fora do componente de endereço --}}
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mt-5">
                     <div>
-                        <label class="block text-sm font-medium text-ink-muted mb-1.5">Latitude</label>
-                        <input type="text" name="latitude" value="{{ old('latitude', $propriedade->latitude) }}"
-                            class="w-full bg-canvas rounded-xl text-ink py-2.5 focus:ring-primary/20 @error('latitude') border-danger @else border-border focus:border-primary @enderror"
-                            placeholder="-23.5505">
-                        @error('latitude')
-                            <p class="text-xs text-danger mt-1">{{ $message }}</p>
-                        @enderror
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-ink-muted mb-1.5">Longitude</label>
-                        <input type="text" name="longitude" value="{{ old('longitude', $propriedade->longitude) }}"
-                            class="w-full bg-canvas rounded-xl text-ink py-2.5 focus:ring-primary/20 @error('longitude') border-danger @else border-border focus:border-primary @enderror"
-                            placeholder="-46.6333">
-                        @error('longitude')
+                        <label class="block text-sm font-medium text-ink-muted mb-1.5">Geolocalização</label>
+                        <input type="text" name="geolocalizacao"
+                            value="{{ old('geolocalizacao', $propriedade->geolocalizacao) }}"
+                            class="w-full bg-canvas rounded-xl text-ink py-2.5 focus:ring-primary/20 @error('geolocalizacao') border-danger @else border-border focus:border-primary @enderror"
+                            placeholder="-23.061353,-49.125454">
+                        <p class="text-xs text-ink-muted mt-1">Formato: latitude,longitude</p>
+                        @error('geolocalizacao')
                             <p class="text-xs text-danger mt-1">{{ $message }}</p>
                         @enderror
                     </div>

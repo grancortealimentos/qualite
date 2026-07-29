@@ -25,6 +25,9 @@ class PropriedadeRequest extends FormRequest
             'area_consolidada' => $this->paraDecimal(valor: $this->input('area_consolidada')),
             'area_reservada_legal' => $this->paraDecimal(valor: $this->input('area_reservada_legal')),
             'area_app' => $this->paraDecimal(valor: $this->input('area_app')),
+            'geolocalizacao' => $this->input('geolocalizacao')
+                ? trim(preg_replace('/\s*,\s*/', ',', $this->input('geolocalizacao')))
+                : null,
         ]);
     }
 
@@ -60,8 +63,7 @@ class PropriedadeRequest extends FormRequest
             'estado' => ['nullable', 'string', 'max:255'],
             'pais' => ['nullable', 'string', 'max:255'],
             'complemento' => ['nullable', 'string', 'max:255'],
-            'latitude' => ['nullable', 'string', 'max:255'],
-            'longitude' => ['nullable', 'string', 'max:255'],
+            'geolocalizacao' => ['nullable', 'string', 'max:255', $this->regraGeolocalizacaoValida()],
         ];
     }
 
@@ -101,6 +103,7 @@ class PropriedadeRequest extends FormRequest
             'area_reservada_legal' => 'área de reserva legal',
             'area_app' => 'área de APP',
             'capacidade_armazenamento' => 'capacidade de armazenamento',
+            'geolocalizacao' => 'geolocalização',
         ];
     }
 
@@ -127,5 +130,33 @@ class PropriedadeRequest extends FormRequest
         $normalizado = str_replace(['.', ','], ['', '.'], (string) $valor);
 
         return is_numeric($normalizado) ? (float) $normalizado : null;
+    }
+
+    /**
+     * Regra de closure que valida o campo geolocalizacao.
+     * Verifica o formato "latitude,longitude" (regex) e se os dois valores
+     * estão dentro dos limites geográficos reais (lat: -90 a 90, lng: -180 a 180).
+     */
+    private function regraGeolocalizacaoValida(): \Closure
+    {
+        return function (string $atributo, mixed $valor, \Closure $fail): void {
+            if (! preg_match('/^-?\d{1,2}(\.\d+)?,-?\d{1,3}(\.\d+)?$/', $valor)) {
+                $fail('A geolocalização deve estar no formato "latitude,longitude", separados por vírgula, sem espaços.');
+                return;
+            }
+
+            [$latitude, $longitude] = explode(',', $valor);
+            $latitude = (float) $latitude;
+            $longitude = (float) $longitude;
+
+            if ($latitude < -90 || $latitude > 90) {
+                $fail('A latitude informada é inválida.');
+                return;
+            }
+
+            if ($longitude < -180 || $longitude > 180) {
+                $fail('A longitude informada é inválida.');
+            }
+        };
     }
 }

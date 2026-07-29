@@ -253,11 +253,12 @@
                 {{-- Coordenadas: fora do componente de endereço --}}
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mt-5">
                     <div>
-                        <label class="block text-sm font-medium text-ink-muted mb-1.5">Latitude e Longitude</label>
-                        <input type="text" name="latitude_longitude" value="{{ old('latitude_longitude') }}"
-                            class="w-full bg-canvas rounded-xl text-ink py-2.5 focus:ring-primary/20 @error('latitude_longitude') border-danger @else border-border focus:border-primary @enderror"
-                            placeholder="-23.061353, -49.125454">
-                        @error('latitude_longitude')
+                        <label class="block text-sm font-medium text-ink-muted mb-1.5">Geolocalização</label>
+                        <input type="text" name="geolocalizacao" value="{{ old('geolocalizacao') }}"
+                            class="w-full bg-canvas rounded-xl text-ink py-2.5 focus:ring-primary/20 @error('geolocalizacao') border-danger @else border-border focus:border-primary @enderror"
+                            placeholder="-23.061353,-49.125454">
+                        <p class="text-xs text-ink-muted mt-1">Formato: latitude,longitude</p>
+                        @error('geolocalizacao')
                             <p class="text-xs text-danger mt-1">{{ $message }}</p>
                         @enderror
                     </div>

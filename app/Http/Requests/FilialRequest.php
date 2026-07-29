@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use Closure;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -27,6 +28,8 @@ class FilialRequest extends FormRequest
             'cep'  => $this->cep ? preg_replace('/\D/', '', $this->cep) : null,
             // Checkbox/toggle do formulário chega como on/1/true → normaliza para boolean.
             'eh_ativo' => $this->boolean('eh_ativo'),
+            'geolocalizacao' => $this->geolocalizacao ? trim(preg_replace('/\s*,\s*/', ',', $this->geolocalizacao))
+            : null,
         ]);
     }
 
@@ -53,9 +56,7 @@ class FilialRequest extends FormRequest
             'cidade'     => ['nullable', 'string', 'max:255'],
             'estado'     => ['nullable', 'string', 'max:255'],
             'pais'       => ['nullable', 'string', 'max:255'],
-
-            'latitude'   => ['nullable', 'string', 'max:255'],
-            'longitude'  => ['nullable', 'string', 'max:255'],
+            'geolocalizacao' => ['nullable', 'string', 'max:255', $this->regraGeolocalizacaoValida()]
         ];
     }
 
@@ -81,6 +82,7 @@ class FilialRequest extends FormRequest
             'nome_fantasia' => 'nome fantasia',
             'cnpj'          => 'CNPJ',
             'ie'            => 'inscrição estadual',
+            'geolocalizacao' => 'geolocalizacao',
         ];
     }
 
@@ -88,9 +90,9 @@ class FilialRequest extends FormRequest
      * Regra de closure que valida o dígito verificador do CNPJ.
      * Recebe o valor já sem máscara (graças ao prepareForValidation).
      */
-    private function regraCnpjValido(): \Closure
+    private function regraCnpjValido(): Closure
     {
-        return function (string $atributo, mixed $valor, \Closure $fail): void {
+        return function (string $atributo, mixed $valor, Closure $fail): void {
             if (! $this->cnpjEhValido(cnpj: $valor)) {
                 $fail('O CNPJ informado é inválido.');
             }
@@ -125,5 +127,34 @@ class FilialRequest extends FormRequest
         }
 
         return true;
+    }
+
+    private function regraGeolocalizacaoValida(): Closure
+    {
+        return function (string $atributo, mixed $valor, Closure $fail): void
+        {
+            $partes = explode(',', $valor);
+            if(count($partes) !== 2) {
+                $fail('A geolocalização deve estar no formato "latitude,longitude".');
+                return;
+            }
+
+            [$latitude, $longitude] = $partes;
+            if(!is_numeric($latitude) || !is_numeric($longitude)) {
+                $fail('A geolocalização deve conter apenas números separados por vírgula.');
+                return;
+            }
+
+            $latitude = (float) $latitude;
+            $longitude = (float) $longitude;
+            if($latitude < -90 || $latitude > 90) {
+                $fail('A latitude informada é inválida.');
+                return;
+            }
+
+            if($longitude < -180 || $longitude > 180) {
+                $fail('A longitude informada é inválida.');
+            }
+        };
     }
 }

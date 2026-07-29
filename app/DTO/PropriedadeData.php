@@ -26,8 +26,7 @@ final class PropriedadeData
         public readonly ?string $estado,
         public readonly ?string $pais,
         public readonly ?string $complemento,
-        public readonly ?string $latitude,
-        public readonly ?string $longitude,
+        public readonly ?string $geolocalizacao,
     ) {}
 
     /**
@@ -73,8 +72,7 @@ final class PropriedadeData
             estado: $data['estado'] ?? null,
             pais: $data['pais'] ?? null,
             complemento: $data['complemento'] ?? null,
-            latitude: $data['latitude'] ?? null,
-            longitude: $data['longitude'] ?? null,
+            geolocalizacao: $data['geolocalizacao'] ?? null,
         );
     }
 
@@ -105,8 +103,7 @@ final class PropriedadeData
             'estado' => $this->estado,
             'pais' => $this->pais, 
             'complemento' => $this->complemento,
-            'latitude' => $this->latitude,
-            'longitude' => $this->longitude,
+            'geolocalizacao' => $this->geolocalizacao,
         ];
     }
 }

@@ -167,6 +167,7 @@
                                     $tiposCadastro = [
                                         'Veterinario' => 'Veterinário',
                                         'Advogado'    => 'Advogado',
+                                        'Produtor'    => 'Produtor',
                                     ];
 
                                     if ($ehAdmin || $jaEhFuncionario) {

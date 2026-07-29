@@ -36,8 +36,7 @@ class Propriedade extends Model
         'estado',
         'pais', 
         'complemento',
-        'latitude',
-        'longitude',
+        'geolocalizacao',
     ];
 
     protected $casts = [

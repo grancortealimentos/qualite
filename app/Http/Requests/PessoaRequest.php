@@ -149,7 +149,7 @@ class PessoaRequest extends FormRequest
                     return;
                 }
 
-                if($this->user()?->hasRole('admin')) {
+                if($this->user()?->hasRole('Admin')) {
                     return;
                 }
 

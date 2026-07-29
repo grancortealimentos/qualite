@@ -138,6 +138,20 @@
                     </div>
 
                     <div>
+                        <label class="block text-xs font-medium text-ink-muted mb-1.5">
+                            {{ __('Tipo de pessoa') }}
+                        </label>
+                        <select wire:model.live="filtroTipo"
+                            class="py-2 px-3 block w-full bg-canvas border-border rounded-lg text-sm text-ink focus:border-primary focus:ring-primary">
+                            <option value="">{{ __('Todos os tipos') }}</option>
+                            <option value="Funcionario">{{ __('Funcionário') }}</option>
+                            <option value="Veterinario">{{ __('Veterinário') }}</option>
+                            <option value="Advogado">{{ __('Advogado') }}</option>
+                            <option value="Produtor">{{ __('Produtor') }}</option>
+                        </select>
+                    </div>
+
+                    <div>
                         <label
                             class="block text-xs font-medium text-ink-muted mb-1.5">{{ __('Cadastrado a partir de') }}</label>
                         <input type="date" wire:model.live="cadastradoDe"
