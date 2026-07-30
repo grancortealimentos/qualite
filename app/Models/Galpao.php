@@ -14,6 +14,7 @@ class Galpao extends Model
     protected $table = 'galpoes';
 
     protected $fillable = [
+        'eh_ativo',
         'propriedade_id',
         'tipo', //berçario, terminador 
         'nome',
