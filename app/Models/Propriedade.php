@@ -6,6 +6,7 @@ use App\Models\Concerns\Auditavel;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Propriedade extends Model
@@ -51,6 +52,16 @@ class Propriedade extends Model
     public function produtor(): BelongsTo
     {
         return $this->belongsTo(Pessoa::class, 'produtor_id');
+    }
+
+    public function galpoes(): HasMany
+    {
+        return $this->hasMany(Galpao::class, 'galpao_id');
+    }
+
+    public function baias(): HasMany
+    {
+        return $this->hasMany(Baia::class, 'baia_id');
     }
 
     // ------------------------------------------------------------------
