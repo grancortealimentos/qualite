@@ -20,6 +20,10 @@ class Galpao extends Model
         'nome',
     ];
 
+    protected $casts = [
+        'eh_ativo' => 'boolean',
+    ];
+
     public function propriedade(): BelongsTo
     {
         return $this->belongsTo(Propriedade::class, 'propriedade_id');

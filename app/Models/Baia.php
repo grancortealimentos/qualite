@@ -14,9 +14,14 @@ class Baia extends Model
     protected $table = 'baias';
 
     protected $fillable = [
+        'eh_ativo',
         'galpao_id',
         'lote',
         'descricao',
+    ];
+
+    protected $casts = [
+        'eh_ativo' => 'boolean',
     ];
 
     public function galpao(): BelongsTo

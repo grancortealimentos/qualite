@@ -11,6 +11,7 @@ return new class extends Migration
     {
         Schema::create('galpoes', function (Blueprint $table) {
             $table->id();
+            $table->boolean('eh_ativo')->default(true);
             $table->foreignIdFor(Propriedade::class, 'propriedade_id');
             $table->string('tipo');
             $table->string('nome');

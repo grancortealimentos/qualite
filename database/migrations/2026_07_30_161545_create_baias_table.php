@@ -11,6 +11,7 @@ return new class extends Migration
     {
         Schema::create('baias', function (Blueprint $table) {
             $table->id();
+            $table->boolean('eh_ativo')->default(true);
             $table->foreignIdFor(Galpao::class, 'galpao_id');
             $table->string('lote');
             $table->string('descricao')->nullable();
