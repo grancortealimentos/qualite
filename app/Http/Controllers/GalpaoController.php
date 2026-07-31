@@ -12,6 +12,11 @@ class GalpaoController extends Controller
         private readonly GalpaoService $galpaoService
     ) {}
 
+    public function create()
+    {
+        
+    }
+
     public function store(GalpaoRequest $request): RedirectResponse
     {
         try
