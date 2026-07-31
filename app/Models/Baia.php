@@ -28,4 +28,17 @@ class Baia extends Model
     {
         return $this->belongsTo(Galpao::class, 'galpao_id');
     }
+    
+    public function scopeAtivas($query)
+    {
+        return $query->where('eh_ativo', true);
+    }
+
+    public function scopeBusca($query, string $termo)
+    {
+        return $query->where(function ($q) use ($termo) {
+            $q->where('lote', 'ilike', "%{$termo}%")
+                ->orWhere('descricao', 'ilike', "%{$termo}%");
+        });
+    }
 }

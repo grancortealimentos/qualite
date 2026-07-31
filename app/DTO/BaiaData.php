@@ -30,4 +30,14 @@ class BaiaData
             descricao: $data['descricao'] ?? null,
         );
     }
+
+    public function toArray(): array
+    {
+        return [
+            'eh_ativo' => $this->ehAtivo,
+            'galpao_id' => $this->galpaoId,
+            'lote' => $this->lote,
+            'descricao' => $this->descricao,
+        ];
+    }
 }
