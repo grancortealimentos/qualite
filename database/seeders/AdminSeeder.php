@@ -23,7 +23,7 @@ class AdminSeeder extends Seeder
             ]
         );
  
-        User::firstOrCreate(
+        $user = User::firstOrCreate(
             ['email' => $email],
             [
                 'pessoa_id' => $pessoa->id,
@@ -33,5 +33,7 @@ class AdminSeeder extends Seeder
                 'force_password_change' => false, // ver observação: pode ser true se preferir forçar troca no 1º login
             ]
         );
+
+        $user->syncRoles([config('permissoes.papel_administrador')]);
     }
 }
